@@ -1,0 +1,128 @@
+{
+  "id": "1477130",
+  "name": "网页分身",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "11477190",
+      "name": "fs-jt_down",
+      "font_class": "fs-jt_down",
+      "unicode": "e647",
+      "unicode_decimal": 58951
+    },
+    {
+      "icon_id": "11477191",
+      "name": "fs-cha",
+      "font_class": "fs-cha",
+      "unicode": "e648",
+      "unicode_decimal": 58952
+    },
+    {
+      "icon_id": "11477192",
+      "name": "fs-jt_up",
+      "font_class": "fs-jt_up",
+      "unicode": "e649",
+      "unicode_decimal": 58953
+    },
+    {
+      "icon_id": "11477193",
+      "name": "fs-jingao",
+      "font_class": "fs-jingao",
+      "unicode": "e64a",
+      "unicode_decimal": 58954
+    },
+    {
+      "icon_id": "11477194",
+      "name": "fs-right",
+      "font_class": "fs-right",
+      "unicode": "e64b",
+      "unicode_decimal": 58955
+    },
+    {
+      "icon_id": "11477195",
+      "name": "fs-lianjie",
+      "font_class": "fs-lianjie",
+      "unicode": "e64c",
+      "unicode_decimal": 58956
+    },
+    {
+      "icon_id": "11477196",
+      "name": "fs-duangkai",
+      "font_class": "fs-duangkai",
+      "unicode": "e64d",
+      "unicode_decimal": 58957
+    },
+    {
+      "icon_id": "11477401",
+      "name": "fs-shuaxin",
+      "font_class": "fs-shuaxin",
+      "unicode": "e64e",
+      "unicode_decimal": 58958
+    },
+    {
+      "icon_id": "11502359",
+      "name": "fs-back",
+      "font_class": "fs-back",
+      "unicode": "e657",
+      "unicode_decimal": 58967
+    },
+    {
+      "icon_id": "11517784",
+      "name": "fs-shuju",
+      "font_class": "fs-shuju",
+      "unicode": "e658",
+      "unicode_decimal": 58968
+    },
+    {
+      "icon_id": "11604777",
+      "name": "qyyx_comment",
+      "font_class": "qyyx_comment",
+      "unicode": "e65a",
+      "unicode_decimal": 58970
+    },
+    {
+      "icon_id": "11604778",
+      "name": "qyyx_selection",
+      "font_class": "qyyx_selection",
+      "unicode": "e65b",
+      "unicode_decimal": 58971
+    },
+    {
+      "icon_id": "11604779",
+      "name": "qyyx_picture",
+      "font_class": "qyyx_picture",
+      "unicode": "e65c",
+      "unicode_decimal": 58972
+    },
+    {
+      "icon_id": "11604780",
+      "name": "qyyx_troubleshooting",
+      "font_class": "qyyx_troubleshooting",
+      "unicode": "e65d",
+      "unicode_decimal": 58973
+    },
+    {
+      "icon_id": "11604781",
+      "name": "qyyx_screen",
+      "font_class": "qyyx_screen",
+      "unicode": "e65e",
+      "unicode_decimal": 58974
+    },
+    {
+      "icon_id": "11604782",
+      "name": "qyyx_wait",
+      "font_class": "qyyx_wait",
+      "unicode": "e65f",
+      "unicode_decimal": 58975
+    },
+    {
+      "icon_id": "11604783",
+      "name": "qyyx_video",
+      "font_class": "qyyx_video",
+      "unicode": "e660",
+      "unicode_decimal": 58976
+    }
+  ]
+}

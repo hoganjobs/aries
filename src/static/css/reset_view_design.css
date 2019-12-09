@@ -1,0 +1,232 @@
+/* 导航  start */
+.ivu-menu-dark {
+  background-color: transparent;
+  width: 100% !important;
+  padding-left: 0;
+
+}
+.ivu-menu-submenu {
+  border-bottom: 1px solid #252A2E;
+}
+.ivu-menu-vertical .ivu-menu-item, .ivu-menu-vertical .ivu-menu-submenu-title {
+  padding: 14px 24px 14px 40px;
+  background: transparent;
+  font-family: PingFang-SC-Regular;
+  font-size: 16px;
+  color: #FFFFFF !important;
+
+}
+.ivu-menu-dark.ivu-menu-vertical .ivu-menu-opened .ivu-menu-submenu-title {
+  background: transparent;
+  font-family: PingFang-SC-Regular;
+  font-size: 16px;
+  color: #FFFFFF;
+  border-bottom: 1px solid #252A2E;
+
+}
+.ivu-menu-dark.ivu-menu-vertical .ivu-menu-opened {
+  background: transparent;
+}
+.ivu-menu-vertical .ivu-menu-submenu-title-icon {
+  font-size: 20px;
+  right: 12px;
+  color: #B4BCCC;
+}
+.ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu .ivu-menu-item {
+  font-family: PingFang-SC-Regular;
+  font-size: 14px;
+  color: #FFFFFF;
+  padding-left: 72px !important;
+
+}
+.ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu .ivu-menu-item-active, .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu .ivu-menu-item-active:hover {
+  background: #3A3F45 !important;
+}
+.ivu-menu-dark.ivu-menu-vertical .ivu-menu-item:hover, .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu-title:hover {
+  background: #3A3F45 !important;
+
+}
+/* 导航  end */
+
+/* 表格  start */
+.bl-task-table .ivu-table {
+  overflow: auto;
+}
+.bl-task-table .ivu-table .ivu-table-header {
+  display: none;
+}
+.bl-task-table .ivu-table-cell {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.ivu-table td, .ivu-table th {
+  min-height: 46px;
+  font-family: PingFang-SC-Regular;
+  font-size: 16px;
+  color: #333;
+  padding: 13px 0;
+}
+.ivu-table table th {
+  height: 46px !important;
+  background-color: #fff;
+  font-size: 16px;
+  color: #333333;
+  font-weight: bold;
+}
+.ivu-table .ivu-table-row-hover td{
+  background-color: #f9f9f9;
+}
+.color-header-table .ivu-table table th {
+  background-color: #EEF3F9;
+}
+/* 表格  end */
+
+/* 分页  start */
+.ivu-page-item-jump-next, .ivu-page-item-jump-prev, .ivu-page-next, .ivu-page-prev {
+  border: none;
+}
+.ivu-page-item-active {
+  border: none;
+}
+.ivu-page-item {
+  height: 28px;
+  min-width: 28px;
+  line-height: 26px;
+  border: none;
+}
+/* 分页  end */
+
+/* tabs  start */
+.bl-tabs {
+  background-color: #fff;
+  position: relative;
+}
+.bl-tabs .ivu-tabs-bar {
+  margin-bottom: 0;
+}
+.bl-tabs .ivu-tabs-nav .ivu-tabs-tab {
+  padding: 15px 20px;
+  font-size: 16px;
+  text-align: center;
+}
+.bl-tabs .ivu-tabs-nav .ivu-tabs-tab-active {
+  font-family: PingFang-SC-Medium;
+  font-size: 18px;
+  color: #2E82FF;
+  font-weight: bold;
+}
+/* tabs  end */
+
+/* 模态框  start */
+.ivu-modal-wrap {
+  display: flex;
+  display: -webkit-flex;
+  align-items: center;
+  justify-content: center;
+}
+.ivu-modal {
+  top: auto;
+  margin-top: -50px;
+}
+.ivu-modal-header {
+  border: none;
+}
+.ivu-modal-footer {
+  border: none;
+  text-align: center;
+}
+.md-title {
+  font-family: PingFang-SC-Medium;
+  font-size: 24px;
+  color: #333333;
+  letter-spacing: -1.39px;
+  font-weight: bold;
+  margin-bottom: 28px;
+  margin-top: -15px;
+  text-align: center;
+}
+.ivu-modal-close {
+  top: 4px;
+  right: 4px;
+}
+.ivu-modal-close .ivu-icon-ios-close {
+  font-size: 40px;
+  top: 0;
+}
+/* 模态框  end */
+
+/* 按钮  start */
+.ivu-btn-primary {
+  border-color: #1989FA;
+  background: #1989FA;
+  border-radius: 4px;
+}
+.ivu-btn-large {
+  padding: 0 34px;
+  font-size: 18px;
+}
+.ivu-btn.ivu-btn-default {
+  color: #1989FA;
+  border-color: #1989FA;
+}
+.primary-line-btn {
+  color: #1989FA;
+  border-color: #1989FA;
+}
+/* 按钮  end */
+
+/* 输入框  start */
+.ivu-input-group {
+
+}
+ .ivu-input {
+  height: 40px;
+  font-size: 14px;
+}
+.ivu-input-search {
+  padding: 0 34px!important;
+  font-size: 18px;
+}
+.ivu-input-icon-clear {
+  right: 141px;
+  line-height: 40px;
+  cursor: pointer;
+}
+.no-submit-btn .ivu-input-icon-clear {
+  right: 0px;
+  line-height: 40px;
+  cursor: pointer;
+}
+/* 输入框  end */
+
+/* tag  start */
+.ivu-tag {
+  line-height: 20px;
+  height: 20px;
+  margin: 0 4px 4px 0;
+}
+/* tag  end */
+
+.demo-spin-icon-load{
+  animation: ani-demo-spin 1s linear infinite;
+}
+@keyframes ani-demo-spin {
+  from { transform: rotate(0deg);}
+  50%  { transform: rotate(180deg);}
+  to   { transform: rotate(360deg);}
+}
+.demo-spin-col{
+  height: 100px;
+  position: relative;
+  border: 1px solid #eee;
+}
+
+.ivu-spin-fix {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 8;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255,255,255,.3);
+}

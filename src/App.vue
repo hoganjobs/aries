@@ -3,7 +3,7 @@
         <div class="login-box" v-if="showLogin">
             <Login></Login>
         </div>
-        <div class="main" v-if="!showLogin">
+        <div class="main" id="main" v-if="!showLogin">
             <div class="main-inner">
                 <div class="sd">
                     <div class="m-hd">
@@ -16,7 +16,7 @@
                                     <div class="attend_name">{{userInfo ? (userInfo.twin_name || '') : ''}}</div>
                                 </div>
                             </div>
-                            <div class="name">{{userInfo.user_name}}</div>
+                            <div class="name">{{userInfo ? (userInfo.user_name || '') : ''}}</div>
                         </div>
 
                     </div>
@@ -75,7 +75,7 @@
             <div slot="footer">
                 <div class="off-rl-footer-box">
                     <Button class="rl-btn primary-line-btn" size="large" @click="hideUnRelation">不解除</Button>
-                    <Button class="rl-btn" size="large" type="primary" @click="unbind">解除绑定</Button>
+                    <Button class="rl-btn" size="large" :loading="unbindLoading" type="primary" @click="unbind">解除绑定</Button>
                 </div>
             </div>
         </Modal>
@@ -86,6 +86,7 @@
 <script>
     import * as API from './api/api';
     import * as UTILS from './api/utils';
+    import Watermark from './api/watermark'
     import ChatItem from './components/ChatItem'
     import Login from './pages/Login'
 
@@ -108,18 +109,28 @@
                 openMenu: '',
                 offRlModal: false, // 是否显示取消关联modal
                 topShowIco: 'refresh', // 头部显示图标 refresh 刷新 | back 返回
+
+                unbindLoading: false,
             }
         },
         methods: {
+            checkDom:function(){
+
+            },
+
+
             // 解除绑定
             unbind() {
                 var _ = this;
                 window.console.log('解除绑定')
                 window.console.log(_.currentPlatform)
+                _.unbindLoading = true
                 var platform = _.currentPlatform.platform
                 API.unbindOthers(platform).then(function (res) {
+                    _.unbindLoading = false
+                    _.offRlModal = false
                     if(res.data.result) {
-                        _.offRlModal = false
+                        UTILS.blToast('解除成功')
                         var cur = _.currentPlatform;
                         cur.is_relation = false
                         _.$store.commit('changePlatform',cur)
@@ -133,10 +144,13 @@
                         _.$router.push({
                             path: '/welcome',
                         })
+                    }else {
+                        UTILS.blToast(res.data.msg)
                     }
 
                 }).catch(function () {
-
+                    _.unbindLoading = false
+                    UTILS.blToast(_.GLOBAL.sysErrMsg)
                 })
 
             },
@@ -178,9 +192,11 @@
                 var refresh = 'refresh' +  (new Date()).valueOf()
                 window.console.log(refresh)
                 this.$store.commit('clickRefresh', refresh)
-            }
+            },
+
         },
         mounted() {
+            this.checkDom()
             if (this.$route.path == '/') { // 没有路由时
                 if (this.$store.state.userInfo) {
                     this.$router.replace({
@@ -198,8 +214,9 @@
                     this.$router.replace({
                         path: '/unfinished'
                     })
-
                 }
+            }else {
+                UTILS.heartbeat()
             }
 
 
@@ -233,6 +250,8 @@
                 var _pl = 'autohome'; // 当前平台
                 var curr =  bind[_pl];
                 if(curr && JSON.stringify(curr) != '{}') {
+                    Watermark.set(twin.user_name)
+
                     window.console.log(curr)
                     var currPlat = _.$store.state.currentPlatform
                     currPlat.is_relation = true;
@@ -304,6 +323,9 @@
                     this.userInfo = this.$store.state.userInfo
                     // 选中左边菜单
                     let path_name = this.$route.name;
+                    if(path_name == 'abnormal') {
+                        path_name = 'finished'
+                    }
                     this.activeName = this.currentPlatform.platform + '-' + path_name
                     this.openMenu = this.currentPlatform.platform
                     window.console.log(this.showLogin)

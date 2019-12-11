@@ -91,7 +91,7 @@ const mutations = {
   changePlatform(state,currentPlatform) {
     return (state.currentPlatform = currentPlatform)
   },
-  // 修改当前平台
+  // 点击刷新
   clickRefresh(state,is_refresh) {
     return (state.is_refresh = is_refresh)
   },

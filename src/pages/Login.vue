@@ -9,6 +9,7 @@
 <script>
     import * as API from '../api/api';
     import * as UTILS from '../api/utils';
+    import Watermark from '../api/watermark'
     import QRCode from 'qrcodejs2'
     import {getStore} from "../api/utils";
 
@@ -42,54 +43,46 @@
                 var params = new URLSearchParams();
                 params.append('twin_type', 'web');
                 params.append('login_uuid', uuid);
-
+                var timer;
+                clearTimeout(timer);
                 API.getLogin(params).then(function (res) {
-                    var timer;
-                    clearTimeout(timer);
-                    if (res.data.result) {
-                        if (res.data.login) {
-                            var twin = res.data.twin
-                            _.$store.commit('setUserInfo',twin)
-                            UTILS.setStore('userInfo',twin);
-                            var userInfo = twin
-                            _.$store.commit('setUserInfo', userInfo)
-                            if(userInfo.bind_account && JSON.stringify(userInfo.bind_account) != '{}') {
-                                var keys =  Object.keys(userInfo.bind_account)[0]
-                                var plat =  userInfo.bind_account[keys]
-                                if(JSON.stringify(plat) != '{}') {
-                                    var currPlat = _.$store.state.currentPlatform;
-                                    currPlat.user_name = plat.name;
-                                    currPlat.user_avatar = plat.avatar;
-                                    currPlat.user_id = plat.user_id;
-                                    currPlat.is_relation = true;
-                                    currPlat.platform = keys;
-                                    UTILS.setStore('currPlat',currPlat)
-                                    _.$store.commit('changePlatform', currPlat)
-                                    userInfo.bind_account[keys] = currPlat
-                                    _.$store.commit('setUserInfo', userInfo)
-                                    UTILS.setStore('userInfo',userInfo);
+                    if (res.data.login) {
+                        clearTimeout(timer);
+                        var twin = res.data.twin
+                        _.$store.commit('setUserInfo',twin)
+                        UTILS.setStore('userInfo',twin);
+                        var userInfo = twin
+                        _.$store.commit('setUserInfo', userInfo)
+                        Watermark.set(twin.user_name)
+                        UTILS.heartbeat();
+                        if(userInfo.bind_account && JSON.stringify(userInfo.bind_account) != '{}') {
+                            var keys =  Object.keys(userInfo.bind_account)[0]
+                            var plat =  userInfo.bind_account[keys]
+                            if(JSON.stringify(plat) != '{}') {
+                                var currPlat = _.$store.state.currentPlatform;
+                                currPlat.user_name = plat.name;
+                                currPlat.user_avatar = plat.avatar;
+                                currPlat.user_id = plat.user_id;
+                                currPlat.is_relation = true;
+                                currPlat.platform = keys;
+                                UTILS.setStore('currPlat',currPlat)
+                                _.$store.commit('changePlatform', currPlat)
+                                userInfo.bind_account[keys] = currPlat
+                                _.$store.commit('setUserInfo', userInfo)
+                                UTILS.setStore('userInfo',userInfo);
 
 
 
-                                    _.$router.push({
-                                        path: '/unfinished',
-                                        query: {
-                                            id: keys
-                                        }
-                                    })
-                                }else {
-                                    var currentPlatform = _.$store.state.currentPlatform;
-                                    _.$store.commit('changePlatform', currentPlatform)
-
-                                    _.$router.push({
-                                        path: '/welcome',
-                                        query: {
-                                            id: 'autohome'
-                                        }
-                                    })
-                                }
-
+                                _.$router.push({
+                                    path: '/unfinished',
+                                    query: {
+                                        id: keys
+                                    }
+                                })
                             }else {
+                                var currentPlatform = _.$store.state.currentPlatform;
+                                _.$store.commit('changePlatform', currentPlatform)
+
                                 _.$router.push({
                                     path: '/welcome',
                                     query: {
@@ -98,20 +91,29 @@
                                 })
                             }
 
-
-                        } else {
-                            timer = setTimeout(function () {
-                                _.getLogin(uuid)
-                            }, 2000)
+                        }else {
+                            _.$router.push({
+                                path: '/welcome',
+                                query: {
+                                    id: 'autohome'
+                                }
+                            })
                         }
-                    } else {
-                        _.$Message.info(res.data.msg)
 
+
+                    } else {
+                        timer = setTimeout(function () {
+                            _.getLogin(uuid)
+                        }, 2000)
                     }
 
                 }).catch(function () {
                     _.$Message.info(_.GLOBAL.sysErrMsg)
+                    timer = setTimeout(function () {
+                        _.getLogin(uuid)
+                    }, 2000)
                 })
+
             },
             creatQrCode(url) {
                 const qrcode = new QRCode(this.$refs.qrCodeUrl, {

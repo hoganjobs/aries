@@ -1,7 +1,7 @@
 <template>
     <div class="unfinished-box">
         <div class="abnormal-task">
-            <div class="type-select-box">
+            <div class="type-select-box" v-show="!curTabType">
                 <Select v-model="selectVal" :value="selectVal" @on-change="typeChange" style="width:94px">
                     <Option v-for="item in typeList" :value="item.value" :key="item.value">{{ item.label }}</Option>
                 </Select>
@@ -241,17 +241,20 @@
                     let hasVideo = false;
                     let hasImg = false;
                     let tagColor = '';
-                    if (dsc.article_type.indexOf('jh') > -1) {
-                        tagName = '精华'
-                        tagColor = 'bg-orange'
-                    } else if (dsc.article_type.indexOf('qa') > -1) {
-                        tagName = '问题'
-                        tagColor = 'bg-blue'
-                    } else if (dsc.article_type.indexOf('video') > -1) {
-                        hasVideo = true
-                    } else if (dsc.article_type.indexOf('img') > -1) {
-                        hasImg = true
+                    if(dsc.article_type) {
+                        if (dsc.article_type.indexOf('jh') > -1) {
+                            tagName = '精华'
+                            tagColor = 'bg-orange'
+                        } else if (dsc.article_type.indexOf('qa') > -1) {
+                            tagName = '问题'
+                            tagColor = 'bg-blue'
+                        } else if (dsc.article_type.indexOf('video') > -1) {
+                            hasVideo = true
+                        } else if (dsc.article_type.indexOf('img') > -1) {
+                            hasImg = true
+                        }
                     }
+
                     dt.push({
                         title: {
                             task_id: dti.task_id,
@@ -263,7 +266,7 @@
                             hasImg: hasImg,
                             hasVideo: hasVideo,
                             author: dti.creator.name,
-                            time: UTILS.getDateDiff(dti.task_create_at * 1000),
+                            time: dti.date_submitted ? UTILS.getDateDiff(dti.date_submitted * 1000) : '',
                             // error_status: dti.custom_fields_obj.error_status || null,
                             // operate_account: dti.custom_fields_obj.operate_account || null,
                         },
@@ -292,7 +295,6 @@
         },
         created() {
             this.getTaskCount()
-            this.getTaskGrab()
             UTILS.pageJump()
 
         },

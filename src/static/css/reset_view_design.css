@@ -52,6 +52,9 @@
 .bl-task-table .ivu-table {
   overflow: auto;
 }
+.bl-task-table .ivu-table-wrapper {
+  overflow: unset;
+}
 .bl-task-table .ivu-table .ivu-table-header {
   display: none;
 }
@@ -79,6 +82,7 @@
 .color-header-table .ivu-table table th {
   background-color: #EEF3F9;
 }
+
 /* 表格  end */
 
 /* 分页  start */

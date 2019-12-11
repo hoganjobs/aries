@@ -91,3 +91,14 @@ export const checkChangeConfirm = (params) => {
 export const getProgress = (params) => {
     return get('/api/v1/twin/progress', params);
 };
+
+
+/**
+ * 心跳
+ * @param params
+ * @returns {AxiosPromise}
+ * code 1002 登录过期
+ */
+export const heartbeat = (params) => {
+    return get('/api/v1/twin/heartbeat', params);
+};

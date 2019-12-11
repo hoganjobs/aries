@@ -28,7 +28,7 @@
             <Button @click="toUserHome" class="primary-line-btn">去{{item.name}}个人主页</Button> ，若未登录请先登录账号
           </div>
           <div class="rl-desc-item">
-            2.从浏览器地址栏中复制地址粘贴到上方，点击“关联帐号”即可。
+            2.从浏览器地址栏中复制地址粘贴到下方，点击“关联帐号”即可。
           </div>
           <div class="rl-eg">链接地址类似：https://i.autohome.com.cn/132132141</div>
           <div class="rl-link-box dpflex">
@@ -40,7 +40,7 @@
         </div>
       </div>
       <div slot="footer">
-        <Button class="rl-btn" size="large" type="primary" @click="bind">关联帐号</Button>
+        <Button class="rl-btn" size="large" type="primary" :loading="bindLoading" @click="bind">关联帐号</Button>
       </div>
     </Modal>
   </div>
@@ -71,7 +71,8 @@
         info: {},
         rlModal: false,
         rlModalTitle: ' ',
-        is_relation: false
+        is_relation: false,
+        bindLoading: false, // 关联loading
       }
     },
     methods: {
@@ -82,37 +83,48 @@
         if(val == '') {
           _.$Message.info('链接不能为空')
         }else {
+          _.bindLoading = true;
           var currPlat = _.$store.state.currentPlatform;
           var open_type = currPlat.platform;
           var params = new URLSearchParams()
           params.append('open_type', open_type);
           params.append('bind_url',val);
           API.bindOthers(params).then(function (res) {
+            _.bindLoading = false;
+            _.rlModal = false;
+
             var _d = res.data
-            _.rlModal = false
-            _.$Message.info('关联成功')
-            currPlat.user_name = _d.oauth_user_info.name
-            currPlat.user_avatar = _d.oauth_user_info.avatar
-            currPlat.is_relation = true
-            let user = UTILS.getStore('userInfo');
-            user.bind_account[open_type] = currPlat
-            UTILS.setStore('userInfo',user)
-            UTILS.setStore('currPlat',currPlat)
-            _.$store.commit('changePlatform',currPlat)
-            _.$router.push({
-              path:'/unfinished',
-              query: {
-                id:open_type
-              }
-            })
+            if(_d.result) {
+              UTILS.blToast('关联成功');
+              currPlat.user_name = _d.oauth_user_info.name
+              currPlat.user_avatar = _d.oauth_user_info.avatar
+              currPlat.is_relation = true
+              let user = UTILS.getStore('userInfo');
+              user.bind_account[open_type] = currPlat
+              UTILS.setStore('userInfo',user)
+              UTILS.setStore('currPlat',currPlat)
+              _.$store.commit('changePlatform',currPlat)
+              _.$router.push({
+                path:'/unfinished',
+                query: {
+                  id:open_type
+                }
+              })
+            }else {
+              UTILS.blToast(_d.msg);
+
+            }
+
           }).catch(function () {
+            _.bindLoading = false;
+            UTILS.blToast(_.GLOBAL.sysErrMsg);
 
           })
         }
 
       },
       toUserHome() {
-        window.open('https://i.autohome.com.cn/172711065#pvareaid=3311670')
+        window.open('https://account.autohome.com.cn/login?backUrl=//i.autohome.com.cn/')
       },
       showRelation() {
         this.rlModal = true
@@ -132,11 +144,11 @@
       },
       toTask(item,type) {
         var path = '/'+ type;
-        var cur_plat = this.$store.state.userInfo.bind_account[item.platform];
-        window.console.log(this.$store.state.userInfo)
-        cur_plat.is_relation = true;
-
-        this.$store.commit('changePlatform',cur_plat)
+        // var cur_plat = this.$store.state.userInfo.bind_account[item.platform];
+        // window.console.log(this.$store.state.userInfo)
+        // cur_plat.is_relation = true;
+        //
+        // this.$store.commit('changePlatform',cur_plat)
         if(path != this.$route.path ) {
           this.$router.push({
             path: path,

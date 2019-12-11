@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import store from '../store/store'
 import router from '../router'
+import Watermark from '../api/watermark'
+import * as API from '../api/api'
 import '../static/css/base.css'
 import 'view-design/dist/styles/iview.css';
 import '../static/css/reset_view_design.css'
@@ -14,17 +16,55 @@ Vue.use(store);
 var _ = this;
 
 /**
+ * 心跳
+ * @param
+ */
+export const heartbeat = () => {
+    var timer;
+    clearTimeout(timer);
+    var userInfo = getStore('userInfo')
+    var params = {
+        twin_id: userInfo.twin_id,
+    }
+    API.heartbeat(params).then(function (res) {
+        var _d = res.data
+        if(_d) {
+            if(_d.code == 1002) {
+                clearTimeout(timer);
+                blToast('登录已过期，请您重新登录')
+            }else {
+                timer = setTimeout(function () {
+                    heartbeat()
+                }, 5 * 1000)
+            }
+
+        }else {
+            clearTimeout(timer);
+            // UTILS.blToast(res.data.msg)
+        }
+
+    }).catch(function () {
+        clearTimeout(timer);
+        // UTILS.blToast(_.GLOBAL.sysErrMsg)
+    })
+}
+
+/**
  * 信息提示
  * @param msg
  */
 export const blToast = (msg) => {
     if(msg == '登录已过期，请您重新登录') {
-    // if(msg == '123') {
         var lc_user = getStore('userInfo');
         setStore('last_user_info',lc_user)
-        removeStore('userInfo')
+        removeStore('userInfo');
+        removeStore('currPlat');
+        var currentPlatform = store.state.currentPlatform;
+        currentPlatform.is_relation = false;
+        store.commit('changePlatform', currentPlatform)
         store.commit('setUserInfo',null)
         setTimeout(function () {
+            Watermark.clear()
             router.push({
                 path: '/login'
             })
@@ -51,7 +91,11 @@ export const setStore = (name, content) => {
 export const getStore = name => {
     if (!name) return;
     let store = window.localStorage.getItem(name);
-    store = JSON.parse(store);
+    try {
+        store = JSON.parse(store);
+    }catch (e) {
+        store = window.localStorage.getItem(name)
+    }
     return store;
 }
 

@@ -24,49 +24,8 @@ const state = {
         avatar: 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1565819561,2665558554&fm=26&gp=0.jpg'
       },
     },
-    // {
-    //   platform: 'sina',
-    //   name: '新浪微博',
-    //   is_relation: false,
-    //   user: {
-    //     name: '穿靴子的猫',
-    //     avatar: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3253377402,4101385578&fm=26&gp=0.jpg'
-    //   },
-    // },
-    // {
-    //   platform: 'tieba',
-    //   name: '百度贴吧',
-    //   is_relation: false,
-    //   user: {
-    //     name: '哈杀鸡',
-    //     avatar: 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1565819561,2665558554&fm=26&gp=0.jpg'
-    //   },
-    // },
-    // {
-    //   platform: 'qq',
-    //   name: '腾讯新闻',
-    //   is_relation: false,
-    //   user: {
-    //     name: '哈杀鸡',
-    //     avatar: 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1565819561,2665558554&fm=26&gp=0.jpg'
-    //   },
-    // },
-    // {
-    //   platform: 'net_ease',
-    //   name: '网易新闻',
-    //   is_relation: false,
-    //   user: {
-    //     name: '哈杀鸡',
-    //     avatar: 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1565819561,2665558554&fm=26&gp=0.jpg'
-    //   },
-    // },
   ],
   userInfo:null,
-  // userInfo: {
-  //   name: '马什么梅',
-  //   s_name: '网页分身1号',
-  //   avatar: '',
-  // },
   currentPage: 'unfinished',
 };
 

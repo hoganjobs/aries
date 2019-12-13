@@ -1,7 +1,7 @@
 <template>
     <div class="unfinished-box">
         <div class="abnormal-task">
-            <div class="type-select-box" v-show="!curTabType">
+            <div class="type-select-box" v-show="tabIndex == 'all'">
                 <Select v-model="selectVal" :value="selectVal" @on-change="typeChange" style="width:94px">
                     <Option v-for="item in typeList" :value="item.value" :key="item.value">{{ item.label }}</Option>
                 </Select>
@@ -48,7 +48,7 @@
 
             <div style="padding: 10px;overflow: hidden;background: #fff" v-show="abnormalTb.length > 0">
                 <div style="float: right;">
-                    <Page :total="pageTotal" :current="1" @on-change="changePage"></Page>
+                    <Page :total="pageTotal" :page-size="limit" :current="(begin + 1)" @on-change="changePage"></Page>
                 </div>
             </div>
             <NoData v-show="abnormalTb.length == 0  && !spinShow"></NoData>
@@ -81,6 +81,7 @@
 <script>
     import * as API from '../api/api'
     import * as UTILS from '../api/utils'
+    import bus from '../api/bus'
     import TaskArticle from '../components/TaskArticle'
     import NoData from '../components/NoData'
 
@@ -137,6 +138,7 @@
                     }
                 ],
                 curTabType: '', // 当前tab类型
+                tabIndex: 'all', // 当前tab
             }
         },
         methods: {
@@ -144,23 +146,34 @@
             typeChange(val) {
                 window.console.log(val)
                 var type = val
-                if (name == 'all') {
+                if (val == 'all') {
                     type = ''
                 }
+                this.begin = 0;
                 this.curTabType = type
-                this.getTaskGrab()
+                this.tabIndex = 'all'
+
+                this.getTaskCount()
             },
             // tab切换
             clickTab(name) {
-
+                window.console.log('tab切换')
                 window.console.log(name)
-                var type = name
+                var type = name || this.curTabType;
                 if (name == 'all') {
                     type = ''
                 }
-                this.curTabType = type
+                if(name == 'all' || name == '') {
+                    this.tabIndex = 'all'
+                }else {
+                    this.tabIndex = type
+                }
+                window.console.log(this.tabIndex)
+
+                this.begin = 0;
+                this.curTabType = type;
+                this.selectVal = 'all';
                 this.getTaskCount()
-                this.getTaskGrab()
             },
             getTaskGrab() {
                 var _ = this;
@@ -193,6 +206,8 @@
                 API.getTaskGrab(params).then(function (res) {
                     if (res.data.result) {
                         _.pageTotal = res.data.count
+                        _.getTaskGrab()
+
                     }
                 }).catch(function () {
 
@@ -202,22 +217,32 @@
             toComment(art) {
                 var _ = this;
                 window.console.log(art)
-                var params = new URLSearchParams()
-                params.append('task_id', art.task_id)
-                params.append('interactive_type', 'random')
-                API.taskGrad(params, 'mirror_mobile').then(function (res) {
+                var params = new URLSearchParams();
+                params.append('task_id', art.task_id);
+                params.append('interactive_type', 'random');
+                var winRef = window.open("", "_blank");//打开一个新的页面
+                API.taskGrad(params, 'twin_web').then(function (res) {
                     if (res.data.result) {
                         var params2 = new URLSearchParams()
                         params2.append('issue_id', res.data.task_id)
                         params2.append('interactive_type', res.data.interactive_type)
-                        API.taskResolved(params2).then(function (res2) {
+                        API.taskResolved(params2, 'twin_web').then(function (res2) {
                             if (res2.data.result) {
                                 _.getTaskGrab()
-                                window.open(art.url)
+                                // window.open(art.url)
+                                setTimeout(function () {
+                                    winRef.location = art.url//改变页面的 location
+                                },300);//这个等待很重要，如果不等待的话将无法实现
                             }
                         }).catch(function () {
 
                         })
+                    }else {
+                        if(res.data.code == 891) {
+                            _.getTaskGrab()
+                        }
+                        winRef.close();
+                        UTILS.blToast(res.data.msg)
                     }
 
                 }).catch(function () {
@@ -237,24 +262,29 @@
                 for (let i = 0; i < data.length; i++) {
                     let dti = data[i];
                     let dsc = dti.description
+                    // tag start
                     let tagName = '';
+                    let tagColor = '';
                     let hasVideo = false;
                     let hasImg = false;
-                    let tagColor = '';
                     if(dsc.article_type) {
                         if (dsc.article_type.indexOf('jh') > -1) {
                             tagName = '精华'
                             tagColor = 'bg-orange'
+                        } else if (dsc.article_type.indexOf('jx') > -1) {
+                            tagName = '精选'
+                            tagColor = 'bg-blue'
                         } else if (dsc.article_type.indexOf('qa') > -1) {
                             tagName = '问题'
                             tagColor = 'bg-blue'
-                        } else if (dsc.article_type.indexOf('video') > -1) {
+                        }
+                        if (dsc.article_type.indexOf('video') > -1) {
                             hasVideo = true
                         } else if (dsc.article_type.indexOf('img') > -1) {
                             hasImg = true
                         }
                     }
-
+                    // tag end
                     dt.push({
                         title: {
                             task_id: dti.task_id,
@@ -285,30 +315,26 @@
                 window.console.log(e)
                 this.begin = e - 1;
                 this.getTaskGrab()
-                // The simulated data is changed directly here, and the actual usage scenario should fetch the data from the server
-                // this.tableData1 = this.mockTableData1();
             },
+            getRefreshStatus() {
+                var _ = this;
+                let key = _.$route.name + 'Refresh';
+                bus.$off(key);
+                bus.$on(key,() => {
+                    this.clickTab(this.curTabType)
+                })
+            }
 
         },
         mounted() {
-            // UTILS.blToast('123')
+            this.getRefreshStatus();
         },
         created() {
             this.getTaskCount()
             UTILS.pageJump()
 
         },
-        watch: {
-            clickRefresh() {
-                return this.$store.state.is_refresh
-            }
-        },
-        computed: {
-            clickRefresh() {
-                this.clickTab(this.curTabType)
-                window.console.log(this.$store.state.is_refresh)
-            }
-        },
+
     }
 </script>
 

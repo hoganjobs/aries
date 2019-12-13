@@ -68,6 +68,9 @@ const state = {
   //   avatar: '',
   // },
   currentPage: 'unfinished',
+  platform_homepage: {
+    autohome: 'https://i.autohome.com.cn/'
+  },
 };
 
 /**

@@ -22,16 +22,21 @@ var _ = this;
 export const heartbeat = () => {
     var timer;
     clearTimeout(timer);
-    var userInfo = getStore('userInfo')
-    var params = {
-        twin_id: userInfo.twin_id,
-    }
-    API.heartbeat(params).then(function (res) {
+    API.heartbeat().then(function (res) {
         var _d = res.data
         if(_d) {
-            if(_d.code == 1002) {
+            if(_d.code == 1002) { // 登录过期
                 clearTimeout(timer);
                 blToast('登录已过期，请您重新登录')
+            }else if(_d.code == 1003) { // 账号已解绑，需要刷新左边栏
+                clearTimeout(timer);
+                noBind()
+            }else if(_d.code == 1004) { // 踢下线
+                clearTimeout(timer);
+                blToast('分身在其他地方登录', 1004)
+            }else if(_d.code == 1005) { // 删除分身
+                clearTimeout(timer);
+                blToast('分身已被删除', 1005)
             }else {
                 timer = setTimeout(function () {
                     heartbeat()
@@ -39,13 +44,33 @@ export const heartbeat = () => {
             }
 
         }else {
-            clearTimeout(timer);
-            // UTILS.blToast(res.data.msg)
+            timer = setTimeout(function () {
+                heartbeat()
+            }, 5 * 1000)
         }
 
     }).catch(function () {
-        clearTimeout(timer);
-        // UTILS.blToast(_.GLOBAL.sysErrMsg)
+        timer = setTimeout(function () {
+            heartbeat()
+        }, 5 * 1000)
+    })
+}
+
+/**
+ * 没有关联账号的跳转
+ */
+export const noBind = () => {
+    var cur = store.state.currentPlatform;
+    cur.is_relation = false
+    store.commit('changePlatform',cur)
+    window.console.log(cur)
+
+    var userInfo = getStore('userInfo');
+    userInfo.bind_account = {}
+    setStore('userInfo',userInfo)
+    router.push({
+        path: '/welcome',
+        platform:cur.platform
     })
 }
 
@@ -53,25 +78,36 @@ export const heartbeat = () => {
  * 信息提示
  * @param msg
  */
-export const blToast = (msg) => {
+export const blToast = (msg, code) => {
     if(msg == '登录已过期，请您重新登录') {
-        var lc_user = getStore('userInfo');
-        setStore('last_user_info',lc_user)
-        removeStore('userInfo');
-        removeStore('currPlat');
-        var currentPlatform = store.state.currentPlatform;
-        currentPlatform.is_relation = false;
-        store.commit('changePlatform', currentPlatform)
-        store.commit('setUserInfo',null)
-        setTimeout(function () {
-            Watermark.clear()
-            router.push({
-                path: '/login'
-            })
-        },1500)
+        blLogout()
+    }
+    if(code == 1002 || code == 1004 || code == 1005) {
+        blLogout()
     }
     Message.info(msg)
 
+}
+
+/**
+ * 退出登录
+ */
+export const blLogout = () => {
+    var lc_user = getStore('userInfo');
+    setStore('last_user_info',lc_user)
+    removeStore('userInfo');
+    removeStore('currPlat');
+    var currentPlatform = store.state.currentPlatform;
+
+    setTimeout(function () {
+        Watermark.clear()
+        currentPlatform.is_relation = false;
+        store.commit('changePlatform', currentPlatform)
+        store.commit('setUserInfo',null)
+        router.push({
+            path: '/login'
+        })
+    },1500)
 }
 
 /**
@@ -152,6 +188,12 @@ export const pageJump = name => {
     }
 }
 
+export const toHomepage = () => {
+    let currentPlatform = store.state.currentPlatform;
+    let homepage = store.state.platform_homepage[currentPlatform.platform];
+    window.open(homepage)
+}
+
 /**
  * 计算时差
  * @param dateTimeStamp 时间戳
@@ -159,6 +201,7 @@ export const pageJump = name => {
  * @returns {string}
  */
 export const getDateDiff = (dateTimeStamp, lv)=> {
+    var secend = 1000 ;
     var minute = 1000 * 60;
     var hour = minute * 60;
     var day = hour * 24;
@@ -175,14 +218,15 @@ export const getDateDiff = (dateTimeStamp, lv)=> {
     var dayC = diffValue / day;
     var hourC = diffValue / hour;
     var minC = diffValue / minute;
+    var secC = diffValue / secend;
     if (monthC >= 1) {
-        result = "" + parseInt(monthC) + "个月前";
+        result = "" + parseInt(monthC) + "月前";
     } else if (weekC >= 1) {
         result = "" + parseInt(weekC) + "周前";
     } else if (dayC >= 1) {
         result = "" + parseInt(dayC) + "天前";
     } else if (hourC >= 1) {
-        result = "" + parseInt(hourC) + "个小时前";
+        result = "" + parseInt(hourC) + "小时前";
     } else if (minC >= 1) {
         result = "" + parseInt(minC) + "分钟前";
     } else
@@ -190,19 +234,19 @@ export const getDateDiff = (dateTimeStamp, lv)=> {
     if(lv == 2) {
         if (dayC >= 1) {
             result = "" + parseInt(dayC) + "天";
-            if (hourC >= 1) {
-                result = "" + parseInt(dayC) + "天" + (parseInt(hourC) % 24) + "个小时";
+            if ((parseInt(hourC) % 24) >= 1) {
+                result = "" + parseInt(dayC) + "天" + (parseInt(hourC) % 24) + "小时";
             }
         } else if (hourC >= 1) {
-            result = "" + parseInt(hourC) + "个小时";
-            if (minC >= 1) {
-                result = parseInt(hourC) + "个小时" + (parseInt(minC) % 60) + "分钟";
+            result = "" + parseInt(hourC) + "小时";
+            if ((parseInt(minC)) % 60 >= 1) {
+                result = parseInt(hourC) + "小时" + (parseInt(minC) % 60) + "分钟";
             }
         } else if (minC >= 1) {
             result = "" + parseInt(minC) + "分钟";
         } else {
-            result = "刚刚";
+            result = parseInt(secC) + '秒';
         }
     }
     return result;
-}
+};

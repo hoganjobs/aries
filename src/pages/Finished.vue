@@ -17,20 +17,14 @@
                                         <div class="" v-if="row.title.error_status == 'no_action'">
                                             <Button @click="aiDebug(row.title)">智能排查
                                             </Button>
-
-                                            <Poptip title="口径" v-if="row.hd.related_info" trigger="hover"
-                                                    :content="row.hd.related_info || ' '" word-wrap width="180"
-                                                    placement="bottom-end">
-                                                <Button @click="toComment(row.title)">{{row.hd.name}}</Button>
-                                            </Poptip>
                                         </div>
-                                        <div class="" v-if="row.title.error_status !== 'no_action'">
+                                        <div class="" v-if="row.title.error_status != 'no_action'">
                                             <Button v-if="!row.hd.related_info" @click="toComment(row.title)">
                                                 {{row.hd.name}}
                                             </Button>
 
                                             <Poptip title="口径" v-if="row.hd.related_info" trigger="hover"
-                                                    :content="row.hd.related_info || ' '" word-wrap width="180"
+                                                    :content="row.hd.related_info || ' '" word-wrap width="220"
                                                     placement="bottom-end">
                                                 <Button @click="toComment(row.title)">{{row.hd.name}}</Button>
                                             </Poptip>
@@ -42,7 +36,7 @@
                         </div>
                         <div style="padding: 10px;overflow: hidden;background: #fff">
                             <div style="float: right;">
-                                <Page :total="pageTotal.abnormal" :page-size="limit" :current="1"
+                                <Page :total="pageTotal.abnormal" :page-size="limit" :current="(begin.abnormal + 1)"
                                       @on-change="changePage"></Page>
                             </div>
                         </div>
@@ -57,26 +51,31 @@
                                 <template slot-scope="{ row }" slot="title">
                                     <TaskArticle :item="row.title "></TaskArticle>
                                 </template>
-                                <template slot-scope="{ row }" slot="hd">
+                                <template slot-scope="{ row, index }" slot="hd">
                                     <div class="hd-btn-box tips-text dpflex pending-hd-box" style="text-align: right">
                                         <div class="">
                                             <Button v-if="!row.hd.related_info" @click="toComment(row.title)">去评论
                                             </Button>
 
-                                            <Poptip title="口径" v-if="row.hd.related_info" trigger="hover"
-                                                    :content="row.hd.related_info || ' '" word-wrap width="180"
-                                                    placement="bottom-end">
+                                            <Poptip  title="口径" v-if="row.hd.related_info" trigger="hover"
+                                                    :content="row.hd.related_info || ' '" word-wrap width="220"
+                                                    :placement="index != (limit -1)?'bottom-end':'top-end'">
                                                 <Button @click="toComment(row.title)">去评论</Button>
                                             </Poptip>
+<!--                                            <Poptip v-show="index == (limit -1)" title="口径" v-if="row.hd.related_info" trigger="hover"-->
+<!--                                                    :content="row.hd.related_info || ' '" word-wrap width="240"-->
+<!--                                                    placement="top-end">-->
+<!--                                                <Button @click="toComment(row.title)">去评论</Button>-->
+<!--                                            </Poptip>-->
                                         </div>
-                                        <div>已等待验收{{row.hd.exp}}</div>
+                                        <div v-if="row.hd.exp.indexOf('NaN') < 0">已等待验收 {{row.hd.exp}}</div>
                                     </div>
                                 </template>
                             </Table>
                         </div>
                         <div style="padding: 10px;overflow: hidden;background: #fff">
                             <div style="float: right;">
-                                <Page :total="pageTotal.pending" :page-size="limit" :current="1"
+                                <Page :total="pageTotal.pending" :page-size="limit" :current="(begin.pending + 1)"
                                       @on-change="changePage"></Page>
                             </div>
                         </div>
@@ -93,7 +92,7 @@
                                     <TaskArticle :item="row.title "></TaskArticle>
                                 </template>
                                 <template slot-scope="{ row }" slot="exp">
-                                    <div class="hd-btn-box tips-text" style="text-align: right">
+                                    <div v-if="row.exp.indexOf('NaN') < 0" class="hd-btn-box tips-text" style="text-align: right">
                                         <div v-if="row.exp == '刚刚'">{{row.exp}}已验收</div>
                                         <div v-if="row.exp != '刚刚'">{{row.exp}}前已验收</div>
                                     </div>
@@ -101,7 +100,7 @@
                             </Table>
                             <div style="padding: 10px;overflow: hidden;background: #fff">
                                 <div style="float: right;">
-                                    <Page :total="pageTotal.finished" :page-size="limit" :current="1"
+                                    <Page :total="pageTotal.finished" :page-size="limit" :current="(begin.finished + 1)"
                                           @on-change="changePage"></Page>
                                 </div>
                             </div>
@@ -123,6 +122,8 @@
 <script>
     import * as API from '../api/api'
     import * as UTILS from '../api/utils'
+    import merge from 'webpack-merge'
+    import bus from '../api/bus'
     import TaskArticle from '../components/TaskArticle'
     import NoData from '../components/NoData'
 
@@ -198,12 +199,13 @@
             }
         },
         methods: {
-            getTicketsCount(status, get_error_status, type) {
+            getTicketsCount(status, get_error_status, type, error_status) {
                 var _ = this;
 
                 var params = {
                     status: status,
                     get_error_status: get_error_status || null,
+                    error_status: error_status || null,
                     is_count: true
                 }
                 API.getTickets(params).then(function (res) {
@@ -220,22 +222,37 @@
             },
             renderFirstTab() {
                 var _ = this;
-                if (_.pageTotal.abnormal > 0) {
-                    _.active = 'abnormal'
-                } else if (_.pageTotal.pending > 0) {
-                    _.active = 'pending'
-                } else if (_.pageTotal.finished > 0) {
-                    _.active = 'finished'
-                } else {
-                    _.active = 'abnormal'
+                var tab = _.$route.query.tab
+                if(tab) {
+                    _.active = tab;
+                    _.$router.replace({
+                        path: '/finished',
+                        query: {
+                            id: _.$route.query.id
+                        }
+                    })
+                }else {
+                    if (_.pageTotal.abnormal > 0) {
+                        _.active = 'abnormal'
+                    } else if (_.pageTotal.pending > 0) {
+                        _.active = 'pending'
+                    } else if (_.pageTotal.finished > 0) {
+                        _.active = 'finished'
+                    } else {
+                        _.active = 'abnormal'
+                    }
                 }
+                _.calcGetData('firstRender')
+
             },
-            getTickets(status, get_error_status) {
+            getTickets(status, get_error_status, error_status) {
                 var _ = this;
+                _.spinShow = true
                 var active = _.active;
                 var params = {
                     status: status,
                     get_error_status: get_error_status || null,
+                    error_status: error_status || null,
                     begin: _.begin[active] * _.limit,
                     limit: _.limit
                 }
@@ -254,17 +271,36 @@
             },
             // tab切换
             clickTab(type) {
-                this.active = type
+                var _ = this;
+                this.active = type;
+                this.begin[type] = 0;
+                _.calcGetData()
+            },
+            calcGetData(firstRender) {
+                var _ = this;
+                var active = _.active
                 let status = 'acknowledged';
                 var get_error_status = null
-                if (type == 'pending') {
+                var error_status = null
+                if (active == 'pending') {
                     status = 'acknowledged'
-                } else if (type == 'finished') {
+                    error_status = 'none'
+                } else if (active == 'finished') {
                     status = 'confirmed'
                 } else {
                     get_error_status = true
                 }
-                this.getTickets(status, get_error_status)
+                if(!firstRender) {
+                    if (active == 'abnormal') {
+                        _.getTicketsCount('acknowledged', true, 'abnormal');
+                    } else if (active == 'pending') {
+                        _.getTicketsCount('acknowledged', false, 'pending','none');
+                    } else if (active == 'finished') {
+                        _.getTicketsCount('confirmed', false, 'finished')
+                    }
+                }
+
+                this.getTickets(status, get_error_status,error_status)
             },
             aiDebug(row) {
                 window.console.log(row)
@@ -281,37 +317,43 @@
                 for (let i = 0; i < data.length; i++) {
                     let dti = data[i];
                     let dsc = dti.description
+                    // tag start
                     let tagName = '';
                     let tagColor = '';
                     let hasVideo = false;
                     let hasImg = false;
-                    // tag start
-                    if (dsc.article_type.indexOf('jh') > -1) {
-                        tagName = '精华'
-                        tagColor = 'bg-orange'
-                    } else if (dsc.article_type.indexOf('qa') > -1) {
-                        tagName = '问题'
-                        tagColor = 'bg-blue'
-                    } else if (dsc.article_type.indexOf('video') > -1) {
-                        hasVideo = true
-                    } else if (dsc.article_type.indexOf('img') > -1) {
-                        hasImg = true
+                    if(dsc.article_type) {
+                        if (dsc.article_type.indexOf('jh') > -1) {
+                            tagName = '精华'
+                            tagColor = 'bg-orange'
+                        } else if (dsc.article_type.indexOf('jx') > -1) {
+                            tagName = '精选'
+                            tagColor = 'bg-blue'
+                        } else if (dsc.article_type.indexOf('qa') > -1) {
+                            tagName = '问题'
+                            tagColor = 'bg-blue'
+                        }
+                        if (dsc.article_type.indexOf('video') > -1) {
+                            hasVideo = true
+                        } else if (dsc.article_type.indexOf('img') > -1) {
+                            hasImg = true
+                        }
                     }
                     // tag end
 
                     var tb_item = {
                         title: {
-                            task_id: dti.task_id,
-                            ticket_id: dti.ticket_id,
-                            title: dti.summary,
-                            url: dsc.article_url,
+                            task_id: dti.task_id || '',
+                            ticket_id: dti.ticket_id || '',
+                            title: dti.summary || '',
+                            url: dsc.article_url || '',
                             tag: 'top',
                             tagName: tagName,
                             tagColor: tagColor,
                             hasImg: hasImg,
                             hasVideo: hasVideo,
-                            interactive_type: dti.custom_fields_obj.interactive_type,
-                            author: dti.creator.name,
+                            interactive_type: dti.custom_fields_obj.interactive_type || '',
+                            author: dti.creator.name || '',
                             time: UTILS.getDateDiff(dti.task_create_at * 1000),
                             error_status: dti.custom_fields_obj.error_status || null,
                             operate_account: dti.custom_fields_obj.operate_account || null,
@@ -326,8 +368,8 @@
                     if (active == 'pending') {
                         tb_item.hd = {
                             exp: UTILS.getDateDiff(dti.resolved_at * 1000, 2),
-                            related_info: dti.steps_to_reproduce
-
+                            // related_info: dti.steps_to_reproduce
+                            related_info: '萨哈收到货教室里看到的hi阿萨德哈萨哈收到货教室里看到的hi阿萨德哈萨哈收到货教室里看到的hi阿萨德哈萨哈收到货教室里看到的hi阿萨德哈'
                         }
                     }
                     if (active == 'finished') {
@@ -350,74 +392,62 @@
                 window.console.log(num)
                 var active = this.active
                 this.begin[active] = num - 1
-                let status = 'acknowledged';
-                var get_error_status = null
-                if (active == 'pending') {
-                    status = 'acknowledged'
-                } else if (active == 'finished') {
-                    status = 'confirmed'
-                } else {
-                    get_error_status = true
-                }
-                this.getTickets(status, get_error_status)
+                this.calcGetData()
+
             },
             toComment(art) {
                 var _ = this;
                 window.console.log(art)
+                var winRef = window.open("", "_blank");//打开一个新的页面
                 var params2 = new URLSearchParams()
                 params2.append('issue_id', art.ticket_id)
                 params2.append('interactive_type', art.interactive_type)
-                API.taskResolved(params2).then(function (res2) {
+                API.taskResolved(params2, 'twin_web').then(function (res2) {
                     if (res2.data.result) {
-                        if (_.active == 'abnormal') {
-                            _.getTicketsCount('acknowledged', true, 'abnormal');
-                            _.getTickets('acknowledged', true);
-                            _.getTicketsCount('acknowledged', false, 'pending');
-                        } else {
-                            _.getTicketsCount('acknowledged', false, 'pending');
-                            _.getTickets('acknowledged', null)
-
-                        }
-                        window.open(art.url)
+                        setTimeout(function () {
+                            _.calcGetData()
+                        },1500)
+                        // if (_.active == 'abnormal') {
+                        //     _.getTicketsCount('acknowledged', true, 'abnormal');
+                        //     _.getTickets('acknowledged', true);
+                        //     _.getTicketsCount('acknowledged', false, 'pending','none');
+                        // } else {
+                        //     _.getTicketsCount('acknowledged', false, 'pending', 'none');
+                        //     _.getTickets('acknowledged', null)
+                        //
+                        // }
+                        setTimeout(function () {
+                            winRef.location = art.url//改变页面的 location
+                        },300);//这个等待很重要，如果不等待的话将无法实现
+                        // window.open(art.url)
                     }
                 }).catch(function () {
 
                 })
 
             },
+            getRefreshStatus() {
+                var _ = this;
+                let key = _.$route.name + 'Refresh';
+                bus.$off(key);
+                bus.$on(key,() => {
+                    var active = _.active;
+                    _.clickTab(active)
+                })
+            }
         },
         created() {
             var _ = this;
             _.getTicketsCount('acknowledged', true, 'abnormal');
-            _.getTicketsCount('acknowledged', false, 'pending');
+            _.getTicketsCount('acknowledged', false, 'pending', 'none');
             _.getTicketsCount('confirmed', false, 'finished')
-            _.getTickets('acknowledged', true);
+            // _.getTickets('acknowledged', true);
 
 
         },
         mounted() {
             var _ = this;
-        },
-        watch: {
-            clickRefresh() {
-                return this.$store.state.is_refresh
-            }
-        },
-        computed: {
-            clickRefresh() {
-                var _ = this;
-                var active = _.active
-                if (active == 'abnormal') {
-                    _.getTicketsCount('acknowledged', true, 'abnormal');
-                } else if (active == 'pending') {
-                    _.getTicketsCount('acknowledged', false, 'pending');
-                } else if (active == 'finished') {
-                    _.getTicketsCount('confirmed', false, 'finished')
-                }
-                _.spinShow = true
-                _.clickTab(active)
-                window.console.log(_.$store.state.is_refresh)
-            }
+            _.getRefreshStatus();
         },
     }
 </script>

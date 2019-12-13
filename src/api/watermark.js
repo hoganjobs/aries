@@ -13,8 +13,8 @@ let setWatermark = (str) => {
     }
 
     let can = document.createElement('canvas')
-    can.width = 240
-    can.height = 160
+    can.width = 280
+    can.height = 240
 
     let cans = can.getContext('2d')
     cans.rotate(-20 * Math.PI / 180)
@@ -29,12 +29,16 @@ let setWatermark = (str) => {
     let div = document.createElement('div')
     div.id = w_id
     div.style.pointerEvents = 'none'
-    div.style.top = '70px'
-    div.style.left = '0px'
+    div.style.top = '50%'
+    div.style.left = '50%'
     div.style.position = 'fixed'
     div.style.zIndex = '1111'
-    div.style.width = document.documentElement.clientWidth - 100 + 'px'
-    div.style.height = document.documentElement.clientHeight - 100 + 'px'
+    // div.style.width = document.documentElement.clientWidth - 100 + 'px'
+    // div.style.height = document.documentElement.clientHeight - 100 + 'px'
+    div.style.width = '900px'
+    div.style.height = '800px'
+    div.style.marginTop = '-400px'
+    div.style.marginLeft = '-310px'
     div.style.background = 'url(' + can.toDataURL('image/png') + ') left top repeat'
     document.body.appendChild(div)
     // console.log(document.getElementById('main'))
@@ -53,12 +57,15 @@ watermark.set = (str) => {
     window.onresize = () => {
         setWatermark(str)
     }
+
 }
 
 watermark.clear = () => {
-    if(document.getElementById(w_id)) {
+    var box=document.getElementById(w_id);
+
+    if(box) {
         clearInterval(watermark_timer)
-        document.getElementById(w_id).remove()
+        box.remove();
     }
 
 }

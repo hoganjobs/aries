@@ -43,7 +43,7 @@
                             </div>
                             <div class="refresh-ico-box back-ico-box" v-show="topShowIco=='back'" @click="pageBack"><i
                                     class="iconfont iconfs-back refresh-ico"></i></div>
-                            <div @click="refresh" ref="refresh" id="refresh" class="refresh-ico-box" v-show="topShowIco=='refresh'"><i
+                            <div @click="refreshData" ref="refresh" id="refresh" class="refresh-ico-box" v-show="topShowIco=='refresh'"><i
                                     class="iconfont iconfs-shuaxin refresh-ico"></i></div>
                         </div>
                         <div class="chat-bd topnav_box"><!---->
@@ -86,6 +86,7 @@
 <script>
     import * as API from './api/api';
     import * as UTILS from './api/utils';
+    import bus from  './api/bus'
     import Watermark from './api/watermark'
     import ChatItem from './components/ChatItem'
     import Login from './pages/Login'
@@ -131,19 +132,8 @@
                     _.offRlModal = false
                     if(res.data.result) {
                         UTILS.blToast('解除成功')
-                        var cur = _.currentPlatform;
-                        cur.is_relation = false
-                        _.$store.commit('changePlatform',cur)
-                        window.console.log(cur)
-                        window.console.log(_.currentPlatform)
 
-                        var userInfo = UTILS.getStore('userInfo');
-                        userInfo.bind_account = {}
-                        UTILS.setStore('userInfo',userInfo)
-                        _.platformList = _.platformList
-                        _.$router.push({
-                            path: '/welcome',
-                        })
+                        UTILS.noBind()
                     }else {
                         UTILS.blToast(res.data.msg)
                     }
@@ -188,10 +178,13 @@
                     })
                 }
             },
-            refresh() {
+            refreshData() {
                 var refresh = 'refresh' +  (new Date()).valueOf()
+                window.console.log('clickRefresh')
                 window.console.log(refresh)
-                this.$store.commit('clickRefresh', refresh)
+                // this.$store.commit('clickRefresh', refresh)
+                var router_name = this.$route.name;
+                bus.$emit(router_name+'Refresh',refresh)
             },
 
         },
@@ -249,8 +242,10 @@
                 window.console.log(bind)
                 var _pl = 'autohome'; // 当前平台
                 var curr =  bind[_pl];
+                Watermark.set(twin.user_name)
+
                 if(curr && JSON.stringify(curr) != '{}') {
-                    Watermark.set(twin.user_name)
+
 
                     window.console.log(curr)
                     var currPlat = _.$store.state.currentPlatform
@@ -310,12 +305,6 @@
                     }else {
                         this.showLogin = false
                     }
-                    // var userInfo = UTILS.getStore('userInfo');
-                    // var currPlat = UTILS.getStore('currPlat');
-                    // this.userInfo = userInfo
-                    // this.$store.commit('changePlatform',currPlat)
-                    // this.platformList = []
-                    // this.platformList = userInfo.media_platform
                     this.platformList = []
                     this.platformList = this.$store.state.platformList
                     this.currentPlatform = this.$store.state.currentPlatform

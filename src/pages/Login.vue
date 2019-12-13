@@ -23,9 +23,9 @@
                 }
                 var last_user_info = getStore('last_user_info');
                 if(last_user_info) {
-                    params.last_username = last_user_info.username;
                     params.last_twin_name = last_user_info.twin_name;
                     params.last_twin_id = last_user_info.twin_id;
+                    params.last_username = last_user_info.user_name;
                 }
                 API.getLoginQrcode(params).then(function (res) {
                     if (res.data.result) {
@@ -43,6 +43,8 @@
                 var params = new URLSearchParams();
                 params.append('twin_type', 'web');
                 params.append('login_uuid', uuid);
+
+                var has_user_info = this.$store.state.userInfo || null
                 var timer;
                 clearTimeout(timer);
                 API.getLogin(params).then(function (res) {
@@ -102,17 +104,25 @@
 
 
                     } else {
+                        if(!has_user_info) {
+                            timer = setTimeout(function () {
+                                _.getLogin(uuid)
+                            }, 2000)
+                        }
+                    }
+
+                }).catch(function () {
+                    _.$Message.info(_.GLOBAL.sysErrMsg)
+                    if(!has_user_info) {
                         timer = setTimeout(function () {
                             _.getLogin(uuid)
                         }, 2000)
                     }
 
-                }).catch(function () {
-                    _.$Message.info(_.GLOBAL.sysErrMsg)
-                    timer = setTimeout(function () {
-                        _.getLogin(uuid)
-                    }, 2000)
                 })
+
+            },
+            getLoginTimer() {
 
             },
             creatQrCode(url) {

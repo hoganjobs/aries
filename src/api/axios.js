@@ -91,7 +91,7 @@ export function put(url, data = {}) {
 }
 
 //封装put方法 (resfulAPI常用)
-export function putFormData(url, data = {}) {
+export function putFormData(url, data = {}, from) {
     return service({
         url: url,
         method: 'put',
@@ -99,7 +99,9 @@ export function putFormData(url, data = {}) {
         contentType: false,
         headers: {
             // 'Content-Type': 'application/json;charset=UTF-8'
-            'Content-type': 'application/x-www-form-urlencoded'
+            'Content-type': 'application/x-www-form-urlencoded',
+            'from':from
+
         },
         data: data
     })

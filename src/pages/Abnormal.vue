@@ -65,15 +65,15 @@
                 <div class="big-t" style="margin-bottom: 12px">智能排查</div>
                 <div class="result-item" style="text-align: left">
                     您已用“ <span class="blue-t">{{con_name}}</span> ” 账号执行了{{errDataCount}}条任务，很可能在汽车之家执行任务时没有切换到“ <span
-                        class="blue-t">{{curPlat.user_name}}123</span> ” 账号。
-                    您是否更改关联账号为“ <span class="blue-t">{{curPlat.user_name}}</span> ” ？更改后以上已执行任务将完成验收。
+                        class="blue-t">{{curPlat.user_name}}</span> ” 账号。
+                    您是否更改关联账号为“ <span class="blue-t">{{con_name}}</span> ” ？更改后以上已执行任务将完成验收。
                 </div>
                 <div class="ab-r-hd-btn-box">
                     <Button class="ab-r-hd-btn primary-line-btn" size="large" @click="back" type="default">不更改</Button>
-                    <Button class="ab-r-hd-btn" size="large" @click="changeAccount" type="primary">确定更改</Button>
+                    <Button class="ab-r-hd-btn" size="large" :loading="changeAccountLoading" @click="changeAccount" type="primary">确定更改</Button>
                 </div>
                 <div class="task-content">
-                    <div class="task-list-top dpflex">“{{curPlat.user_name}}”已执行任务</div>
+                    <div class="task-list-top dpflex">“{{con_name}}”已执行任务</div>
                     <div class="bl-task-table">
                         <Table :data="taskTb" :columns="TbColumns">
                             <template slot-scope="{ row }" slot="title">
@@ -156,7 +156,9 @@
                 begin: 0,
 
                 confirm_tickets:[], // 任务线索，排查帐号与绑定帐号不一致且无关联人员时，抓取的可验收数据
-                account_data: {} // 排查帐号信息
+                account_data: {}, // 排查帐号信息
+
+                changeAccountLoading: false,
 
             }
         },
@@ -172,7 +174,10 @@
                 params.append('platform', _.curPlat.platform);
                 params.append('account_data', JSON.stringify(_.account_data));
                 params.append('confirm_tickets', JSON.stringify(_.confirm_tickets));
+                _.changeAccountLoading = true;
                 API.checkChangeConfirm(params).then(function (res) {
+                    _.changeAccountLoading = false;
+
                     var _d = res.data;
                     if(_d.result) {
                         UTILS.blToast('更改成功')
@@ -186,14 +191,23 @@
                         UTILS.setStore('userInfo',userInfo)
                         _.$store.commit('changePlatform',currPlat)
                         UTILS.setStore('currPlat',currPlat)
+                        setTimeout(function () {
+                            _.$router.replace({
+                                path:'/finished',
+                                query: {
+                                    id:_.curPlat.platform,
+                                    tab:'finished'
+                                }
+                            })
+                        },1500)
 
 
                     }else {
                         UTILS.blToast(_d.msg)
-
                     }
 
                 }).catch(function () {
+                    _.changeAccountLoading = false;
                     UTILS.blToast(_.GLOBAL.sysErrMsg)
                 })
             },
@@ -283,8 +297,10 @@
                         if (_d.progress == '100.00%') {
                             _.loading = false
                             window.console.log('progress 100.00%')
+
                             if (_d.data_result && _d.data_result.length > 0) { // 有任务
                                 _.showTips = false
+                                _.errDataCount = _d.data_result.length || 0
 
                                 var iss = _d.data_result
                                 var _dt = []
@@ -292,21 +308,27 @@
                                 for (let i = 0; i < iss.length; i++) {
                                     let dti = iss[i].ticket_data;
                                     let dsc = dti.description
+                                    // tag start
                                     let tagName = '';
                                     let tagColor = '';
                                     let hasVideo = false;
                                     let hasImg = false;
-                                    // tag start
-                                    if (dsc.article_type.indexOf('jh') > -1) {
-                                        tagName = '精华'
-                                        tagColor = 'bg-orange'
-                                    } else if (dsc.article_type.indexOf('qa') > -1) {
-                                        tagName = '问题'
-                                        tagColor = 'bg-blue'
-                                    } else if (dsc.article_type.indexOf('video') > -1) {
-                                        hasVideo = true
-                                    } else if (dsc.article_type.indexOf('img') > -1) {
-                                        hasImg = true
+                                    if(dsc.article_type) {
+                                        if (dsc.article_type.indexOf('jh') > -1) {
+                                            tagName = '精华'
+                                            tagColor = 'bg-orange'
+                                        } else if (dsc.article_type.indexOf('jx') > -1) {
+                                            tagName = '精选'
+                                            tagColor = 'bg-blue'
+                                        } else if (dsc.article_type.indexOf('qa') > -1) {
+                                            tagName = '问题'
+                                            tagColor = 'bg-blue'
+                                        }
+                                        if (dsc.article_type.indexOf('video') > -1) {
+                                            hasVideo = true
+                                        } else if (dsc.article_type.indexOf('img') > -1) {
+                                            hasImg = true
+                                        }
                                     }
                                     // tag end
 
@@ -400,16 +422,21 @@
                             let hasVideo = false;
                             let hasImg = false;
                             // tag start
-                            if (dsc.article_type.indexOf('jh') > -1) {
-                                tagName = '精华'
-                                tagColor = 'bg-orange'
-                            } else if (dsc.article_type.indexOf('qa') > -1) {
-                                tagName = '问题'
-                                tagColor = 'bg-blue'
-                            } else if (dsc.article_type.indexOf('video') > -1) {
-                                hasVideo = true
-                            } else if (dsc.article_type.indexOf('img') > -1) {
-                                hasImg = true
+                            if(dsc.article_type) {
+                                if (dsc.article_type.indexOf('jh') > -1) {
+                                    tagName = '精华'
+                                    tagColor = 'bg-orange'
+                                } else if (dsc.article_type.indexOf('jx') > -1) {
+                                    tagName = '精选'
+                                    tagColor = 'bg-blue'
+                                } else if (dsc.article_type.indexOf('qa') > -1) {
+                                    tagName = '问题'
+                                    tagColor = 'bg-blue'
+                                } else if (dsc.article_type.indexOf('video') > -1) {
+                                    hasVideo = true
+                                } else if (dsc.article_type.indexOf('img') > -1) {
+                                    hasImg = true
+                                }
                             }
                             // tag end
 
@@ -441,7 +468,7 @@
                 })
             },
             toUserHome() {
-                window.open('https://account.autohome.com.cn/login?backUrl=//i.autohome.com.cn/')
+                UTILS.toHomepage()
             },
             finding() {
                 var _ = this;

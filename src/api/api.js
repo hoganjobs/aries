@@ -26,8 +26,8 @@ export const taskGrad = (params,from) => {
     return post('/api/v1/twin/tasks/grab', params, from);
 };
 //去评论 改状态为已处理
-export const taskResolved = (params) => {
-    return putFormData('/api/v1/twin/task/resolved', params);
+export const taskResolved = (params, from) => {
+    return putFormData('/api/v1/twin/task/resolved', params, from);
 };
 
 //绑定第三方接口

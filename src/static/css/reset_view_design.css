@@ -139,10 +139,14 @@
 .ivu-modal-header {
   border: none;
 }
-.ivu-modal-footer {
+.bl-rl-md .ivu-modal-footer {
   border: none;
   text-align: center;
 }
+/*.ivu-modal-footer {*/
+/*  border: none;*/
+/*  text-align: center;*/
+/*}*/
 .md-title {
   font-family: PingFang-SC-Medium;
   font-size: 24px;
@@ -180,6 +184,14 @@
 .primary-line-btn {
   color: #1989FA;
   border-color: #1989FA;
+}
+.ivu-btn-text {
+  border-color: #dbdbdb;
+}
+.ivu-btn-text:hover {
+  border-color: #1989FA;
+  color: #1989FA;
+  background-color: #fff;
 }
 /* 按钮  end */
 

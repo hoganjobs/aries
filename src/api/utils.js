@@ -15,6 +15,7 @@ Vue.use(router);
 Vue.use(store);
 var _ = this;
 
+
 /**
  * 心跳
  * @param
@@ -63,11 +64,19 @@ export const noBind = () => {
     var cur = store.state.currentPlatform;
     cur.is_relation = false
     store.commit('changePlatform',cur)
+    setStore('currPlat',cur)
     window.console.log(cur)
-
+    let m_ls = getStore('media_platform');
+    for (let i = 0; i<m_ls.length; i++) {
+        if(m_ls[i].platform == cur.platform) {
+            m_ls[i].is_relation = false;
+            m_ls[i].user = null;
+        }
+    }
     var userInfo = getStore('userInfo');
-    userInfo.bind_account = {}
+    userInfo.bind_account[cur.app_name] = null;
     setStore('userInfo',userInfo)
+    setStore('media_platform',m_ls)
     router.push({
         path: '/welcome',
         platform:cur.platform
@@ -97,6 +106,9 @@ export const blLogout = () => {
     setStore('last_user_info',lc_user)
     removeStore('userInfo');
     removeStore('currPlat');
+    removeStore('bbs');
+    removeStore('no_look');
+    removeStore('media_platform');
     var currentPlatform = store.state.currentPlatform;
 
     setTimeout(function () {

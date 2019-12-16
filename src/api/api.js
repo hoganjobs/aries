@@ -102,3 +102,12 @@ export const getProgress = (params) => {
 export const heartbeat = (params) => {
     return get('/api/v1/twin/heartbeat', params);
 };
+
+/**
+ * 论坛列表
+ * @param params
+ * @returns {AxiosPromise}
+ */
+export const optionsList = (params) => {
+    return get('/api/v1/twin/list/options', params);
+};

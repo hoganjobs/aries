@@ -123,6 +123,62 @@
       "font_class": "qyyx_video",
       "unicode": "e660",
       "unicode_decimal": 58976
+    },
+    {
+      "icon_id": "11892769",
+      "name": "mt_picture_01",
+      "font_class": "mt_picture_",
+      "unicode": "e661",
+      "unicode_decimal": 58977
+    },
+    {
+      "icon_id": "11892770",
+      "name": "mt_fire",
+      "font_class": "mt_fire",
+      "unicode": "e662",
+      "unicode_decimal": 58978
+    },
+    {
+      "icon_id": "11892771",
+      "name": "mt_picture_02",
+      "font_class": "mt_picture_1",
+      "unicode": "e663",
+      "unicode_decimal": 58979
+    },
+    {
+      "icon_id": "11892772",
+      "name": "mt_v",
+      "font_class": "mt_v",
+      "unicode": "e664",
+      "unicode_decimal": 58980
+    },
+    {
+      "icon_id": "11892773",
+      "name": "mt_video_02",
+      "font_class": "mt_video_",
+      "unicode": "e665",
+      "unicode_decimal": 58981
+    },
+    {
+      "icon_id": "11892774",
+      "name": "mt_video_03",
+      "font_class": "mt_video_1",
+      "unicode": "e666",
+      "unicode_decimal": 58982
+    },
+    {
+      "icon_id": "11892775",
+      "name": "mt_picture_03",
+      "font_class": "mt_picture_2",
+      "unicode": "e667",
+      "unicode_decimal": 58983
+    },
+    {
+      "icon_id": "11892776",
+      "name": "mt_video_01",
+      "font_class": "mt_video_2",
+      "unicode": "e668",
+      "unicode_decimal": 58984
     }
   ]
 }

@@ -61,18 +61,26 @@
                             var keys =  Object.keys(userInfo.bind_account)[0]
                             var plat =  userInfo.bind_account[keys]
                             if(JSON.stringify(plat) != '{}') {
-                                var currPlat = _.$store.state.currentPlatform;
-                                currPlat.user_name = plat.name;
-                                currPlat.user_avatar = plat.avatar;
-                                currPlat.user_id = plat.user_id;
-                                currPlat.is_relation = true;
-                                currPlat.platform = keys;
+                                var currPlat = {}
+                                let bind_account = userInfo.bind_account;
+                                let media_platform = twin.media_platform;
+                                var m_list = []
+                                for (let i = 0; i< media_platform.length; i++) {
+                                    if(bind_account[media_platform[i].app_name] && JSON.stringify(bind_account[media_platform[i].app_name]) != '{}') {
+                                        media_platform[i].is_relation = true
+                                        media_platform[i].user = bind_account[media_platform[i].app_name]
+                                    }
+                                    m_list.push(media_platform[i])
+                                    if(media_platform[i].app_name == keys) {
+                                        currPlat = media_platform[i]
+                                    }
+                                }
                                 UTILS.setStore('currPlat',currPlat)
                                 _.$store.commit('changePlatform', currPlat)
-                                userInfo.bind_account[keys] = currPlat
+                                // userInfo.bind_account[keys] = currPlat
                                 _.$store.commit('setUserInfo', userInfo)
                                 UTILS.setStore('userInfo',userInfo);
-
+                                UTILS.setStore('media_platform', m_list)
 
 
                                 _.$router.push({
@@ -83,8 +91,9 @@
                                 })
                             }else {
                                 var currentPlatform = _.$store.state.currentPlatform;
+                                UTILS.setStore('currPlat',currentPlatform)
                                 _.$store.commit('changePlatform', currentPlatform)
-
+                                UTILS.setStore('media_platform', userInfo.media_platform)
                                 _.$router.push({
                                     path: '/welcome',
                                     query: {

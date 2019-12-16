@@ -44,7 +44,7 @@
             <div class="ab-result-box ab-result-box1" v-if="abType == 'ab1'">
                 <div class="result-item">
                     执行任务的账号“ <span class="blue-t">{{con_name}}</span> ” 已被其它人关联使用，需要您到汽车之家切换到“ <span
-                        class="blue-t">{{curPlat.user_name}}</span>
+                        class="blue-t">{{curPlat.user.name}}</span>
                     ” 账号，再次排查。
                 </div>
                 <div class="ab-r-hd-btn-box">
@@ -55,7 +55,7 @@
             <div class="ab-result-box ab-result-box1" v-if="abType == 'ab2'">
                 <div class="result-item">
                     执行任务的账号“ <span class="blue-t">{{con_name}}</span> ” 与已关联账号没有任何任务线索，需要您到汽车之家切换到“ <span
-                        class="blue-t">{{curPlat.user_name}}</span> ” 再次排查。
+                        class="blue-t">{{curPlat.user.name}}</span> ” 再次排查。
                 </div>
                 <div class="ab-r-hd-btn-box">
                     <Button class="ab-r-hd-btn" size="large" @click="checkAgain" type="primary">切换帐号</Button>
@@ -65,7 +65,7 @@
                 <div class="big-t" style="margin-bottom: 12px">智能排查</div>
                 <div class="result-item" style="text-align: left">
                     您已用“ <span class="blue-t">{{con_name}}</span> ” 账号执行了{{errDataCount}}条任务，很可能在汽车之家执行任务时没有切换到“ <span
-                        class="blue-t">{{curPlat.user_name}}</span> ” 账号。
+                        class="blue-t">{{curPlat.user.name}}</span> ” 账号。
                     您是否更改关联账号为“ <span class="blue-t">{{con_name}}</span> ” ？更改后以上已执行任务将完成验收。
                 </div>
                 <div class="ab-r-hd-btn-box">
@@ -92,14 +92,14 @@
             <div class="ab-result-box ab-result-box2" v-if="abType == 'ab4'">
                 <div class="big-t" style="margin-bottom: 12px">智能排查</div>
                 <div class="result-item">
-                    “ <span class="blue-t">{{curPlat.user_name}}</span> ”
+                    “ <span class="blue-t">{{curPlat.user.name}}</span> ”
                     账号已有{{errDataCount}}条任务未检测到任何评论，很可能已被汽车之家屏蔽！建议更换关联账号，重新执行任务。
                 </div>
                 <div class="ab-r-hd-btn-box">
                     <Button class="ab-r-hd-btn primary-line-btn" size="large" @click="back" type="default">知道了</Button>
                 </div>
                 <div class="task-content">
-                    <div class="task-list-top dpflex">“{{curPlat.user_name}}”已执行任务</div>
+                    <div class="task-list-top dpflex">“{{curPlat.user.name}}”已执行任务</div>
                     <div class="bl-task-table">
                         <Table :data="taskTb" :columns="TbColumns">
                             <template slot-scope="{ row }" slot="title">
@@ -182,9 +182,9 @@
                     if(_d.result) {
                         UTILS.blToast('更改成功')
                         var currPlat = _.$store.state.currentPlatform
-                        currPlat.user_name = _.account_data.name
-                        currPlat.user_avatar = _.account_data.avatar
-                        currPlat.user_id = _.account_data.user_id
+                        currPlat.user.name = _.account_data.name
+                        currPlat.user.avatar = _.account_data.avatar
+                        currPlat.user.user_id = _.account_data.user_id
                         var userInfo = UTILS.getStore('userInfo')
                         userInfo.bind_account[currPlat.platform] = currPlat
                         _.$store.commit('setUserInfo',userInfo)
@@ -314,14 +314,17 @@
                                     let hasVideo = false;
                                     let hasImg = false;
                                     if(dsc.article_type) {
-                                        if (dsc.article_type.indexOf('jh') > -1) {
-                                            tagName = '精华'
-                                            tagColor = 'bg-orange'
-                                        } else if (dsc.article_type.indexOf('jx') > -1) {
-                                            tagName = '精选'
+                                        // 问题 < 精华 < 精选
+                                        if (dsc.article_type.indexOf('qa') > -1) {
+                                            tagName = '问题';
                                             tagColor = 'bg-blue'
-                                        } else if (dsc.article_type.indexOf('qa') > -1) {
-                                            tagName = '问题'
+                                        }
+                                        if (dsc.article_type.indexOf('jh') > -1) {
+                                            tagName = '精华';
+                                            tagColor = 'bg-orange'
+                                        }
+                                        if (dsc.article_type.indexOf('jx') > -1) {
+                                            tagName = '精选';
                                             tagColor = 'bg-blue'
                                         }
                                         if (dsc.article_type.indexOf('video') > -1) {

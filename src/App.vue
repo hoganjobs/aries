@@ -23,22 +23,22 @@
                     <div class="m-lst-box topnav_box">
                         <div class="m-lst">
                             <Menu :active-name="activeName" theme="dark" :key="menuKey" :open-names="[openMenu]">
-                                <ChatItem v-for="(item,index) in platformList" :key="index" :item="item" :id="'all1'"
+                                <ChatItem @clickTaskMenu="clickTaskMenu" v-for="(item,index) in platformList" :key="index" :item="item" :id="'all1'"
                                           @click.native="tapItem(item,index)" :activeName="activeName"></ChatItem>
                             </Menu>
-
-
                         </div>
                     </div>
                 </div>
                 <div class="chat-box">
                     <div class="chat-area">
                         <div class="box-hd" v-show="currentPlatform.is_relation">
+                            <SelectBbs v-if="showBbsList"></SelectBbs>
+
                             <div class="title dpflex">
                                 <div class="plat-user-avatar">
-                                    <img :src="currentPlatform.user_avatar" alt="">
+                                    <img :src="currentPlatform.user?currentPlatform.user.avatar:df_avatar" alt="">
                                 </div>
-                                <span>{{currentPlatform.user_name}}</span>
+                                <span>{{currentPlatform.user?currentPlatform.user.name:''}}</span>
                                 <i class="iconfont iconfs-duangkai off-rl-ico" @click="showUnRelation" title="解除关联"></i>
                             </div>
                             <div class="refresh-ico-box back-ico-box" v-show="topShowIco=='back'" @click="pageBack"><i
@@ -56,7 +56,7 @@
             </div>
         </div>
 
-        <Modal v-model="offRlModal" title=" " width="640px">
+        <Modal class="bl-rl-md" v-model="offRlModal" title=" " width="640px">
             <div>
                 <div class="md-title">解除关联</div>
                 <div class="rl-body">
@@ -64,9 +64,9 @@
                         你确定要解除与汽车之家账号“
                         <div class="off-rl-user-box dpflex">
                             <div class="plat-user-avatar">
-                                <img :src="currentPlatform.user_avatar" alt="">
+                                <img :src="currentPlatform.user ? currentPlatform.user.avatar : ''" alt="">
                             </div>
-                            <span>{{currentPlatform.user_name}}</span>
+                            <span>{{currentPlatform.user?currentPlatform.user.name:''}}</span>
                         </div>
                         ” 关联？
                     </div>
@@ -74,11 +74,14 @@
             </div>
             <div slot="footer">
                 <div class="off-rl-footer-box">
-                    <Button class="rl-btn primary-line-btn" size="large" @click="hideUnRelation">不解除</Button>
-                    <Button class="rl-btn" size="large" :loading="unbindLoading" type="primary" @click="unbind">解除绑定</Button>
+                    <Button class="rl-btn primary-line-btn" size="large" :loading="unbindLoading"  @click="unbind">解除绑定</Button>
+
+                    <Button class="rl-btn " type="primary" size="large" @click="hideUnRelation">不解除</Button>
                 </div>
             </div>
         </Modal>
+
+
 
     </div>
 </template>
@@ -89,6 +92,7 @@
     import bus from  './api/bus'
     import Watermark from './api/watermark'
     import ChatItem from './components/ChatItem'
+    import SelectBbs from './components/SelectBbs'
     import Login from './pages/Login'
 
     export default {
@@ -96,15 +100,15 @@
         components: {
             ChatItem,
             Login,
+            SelectBbs,
         },
         data() {
             return {
                 menuKey: '', // 左边栏key 触发更新
                 showLogin: false,
                 df_avatar: require('./static/img/df_avatar_new.jpg'),
-                currPage: '',
-                currentPlatform: {},
-                platformList: [],
+                currentPlatform: UTILS.getStore('currPlat') || {},
+                platformList: UTILS.getStore('media_platform') || [],
                 userInfo: {},
                 activeName: '',
                 openMenu: '',
@@ -112,13 +116,22 @@
                 topShowIco: 'refresh', // 头部显示图标 refresh 刷新 | back 返回
 
                 unbindLoading: false,
+
+                checkBbsMd: false,
+                showBbsList: false, // 显示论坛过滤按钮
             }
         },
         methods: {
-            checkDom:function(){
 
+            // 点击任务列表左边栏
+            clickTaskMenu:function(){
+                window.console.log('点击任务列表左边栏')
+                // 选中左边菜单
+                let path_name = this.$route.name;
+                let plat = this.$route.query.id
+                this.activeName = plat + '-' + path_name
+                this.openMenu = plat
             },
-
 
             // 解除绑定
             unbind() {
@@ -189,7 +202,6 @@
 
         },
         mounted() {
-            this.checkDom()
             if (this.$route.path == '/') { // 没有路由时
                 if (this.$store.state.userInfo) {
                     this.$router.replace({
@@ -217,71 +229,26 @@
 
         created() {
             var _ = this;
-            this.currPage = this.$store.state.currentPage
-            this.currentPlatform = this.$store.state.currentPlatform
-            this.ckTopShowIco()
-            window.console.log(this.currentPlatform)
             var userInfo = UTILS.getStore('userInfo')
-            this.platformList = this.$store.state.platformList
-            // this.platformList = userInfo.media_platform
-
-
             if(this.$route.path == '/login') {
                 this.showLogin = true
             }
-
             if(userInfo) {
-                this.$store.commit('setUserInfo',userInfo)
-                this.userInfo = this.$store.state.userInfo
-                window.console.log(this.userInfo)
-                var twin = this.userInfo
-                // window.location.reload()
-                var bind = twin.bind_account;
-                window.console.log('bind_account')
-                window.console.log(twin)
-                window.console.log(bind)
-                var _pl = 'autohome'; // 当前平台
-                var curr =  bind[_pl];
-                Watermark.set(twin.user_name)
+                _.$store.commit('setUserInfo', userInfo)
 
-                if(curr && JSON.stringify(curr) != '{}') {
-
-
-                    window.console.log(curr)
-                    var currPlat = _.$store.state.currentPlatform
-                    currPlat.is_relation = true;
-                    currPlat.platform = _pl;
-                    currPlat.user_name = curr.user_name || curr.name;
-                    currPlat.user_id = curr.user_id;
-                    currPlat.user_avatar = curr.user_avatar || curr.avatar;
-                    this.$store.commit('changePlatform',currPlat);
-                    UTILS.setStore('currPlat',currPlat)
-                    twin.bind_account[_pl] = currPlat
-                    _.$store.commit('setUserInfo', twin)
-                    UTILS.setStore('userInfo',twin);
-
-                    // 选中左边菜单
-                    let path_name = this.$route.name;
-                    this.activeName = curr.platform + '-' + path_name
-                    this.openMenu = curr.platform
-                    if (this.$route.path == '/welcome') { // 没有路由时
-                        this.$router.push({
-                            path: '/unfinished',
-                            query: {
-                                id: curr.platform
-                            }
-                        })
-                    }
+                var currPlat= UTILS.getStore('currPlat')
+                this.currentPlatform = currPlat
+                this.$store.commit('changePlatform', currPlat)
+                //         // 选中左边菜单
+                let path_name = this.$route.name;
+                this.activeName = currPlat.platform + '-' + path_name
+                this.openMenu = currPlat.platform
+                Watermark.set(userInfo.user_name)
+                if(currPlat.platform == 'autohome') {
+                    this.showBbsList = true
                 }else {
-                    if (this.$route.path != '/welcome') { // 没有路由时
-                        this.$router.push({
-                            path: '/welcome'
-                        })
-                    }
+                    this.showBbsList = false
                 }
-
-
-
             }else {
                 this.$store.commit('setUserInfo',null)
                 if (this.$route.path != '/login') { // 没有路由时
@@ -291,6 +258,96 @@
                 }
 
             }
+
+
+            // this.currentPlatform = this.$store.state.currentPlatform
+            // this.ckTopShowIco()
+            // window.console.log(this.currentPlatform)
+            // var userInfo = UTILS.getStore('userInfo')
+            // // this.platformList = this.$store.state.platformList
+            // // this.platformList = userInfo.media_platform
+            //
+            //
+            // if(this.$route.path == '/login') {
+            //     this.showLogin = true
+            // }
+            // // UTILS.checkStoreData()
+            //
+            // if(userInfo) {
+            //     var _pl = _.$route.query.id || Object.keys(userInfo.bind_account)[0] || 'autohome'; // 当前平台
+            //     var currPlat = {}; // 当前平台数据
+            //
+            //     let bind_account = userInfo.bind_account;
+            //     let media_platform = UTILS.getStore('media_platform');
+            //     if(!media_platform) {
+            //         media_platform = userInfo.media_platform;
+            //     }
+            //
+            //     for (let i = 0; i< media_platform.length; i++) {
+            //         if(bind_account[media_platform[i].app_name] && JSON.stringify(bind_account[media_platform[i].app_name]) != '{}') {
+            //             media_platform[i].is_relation = true
+            //             media_platform[i].user = bind_account[media_platform[i].app_name]
+            //         }
+            //         if(media_platform[i].platform == _pl) {
+            //             currPlat = media_platform[i]
+            //         }
+            //     }
+            //     UTILS.setStore('media_platform', media_platform)
+            //     this.platformList = media_platform
+            //
+            //     this.$store.commit('setUserInfo',userInfo)
+            //     this.userInfo = this.$store.state.userInfo
+            //     window.console.log(this.userInfo)
+            //     var bind = userInfo.bind_account;
+            //     window.console.log('bind_account')
+            //     window.console.log(bind)
+            //     var currBind =  JSON.stringify(bind[_pl]); // 当前绑定的账号
+            //     currBind = JSON.parse(currBind)
+            //     Watermark.set(userInfo.user_name)
+            //
+            //     if(currBind && JSON.stringify(currBind) != '{}') {
+            //         this.$store.commit('changePlatform',currPlat);
+            //         UTILS.setStore('currPlat',currPlat)
+            //         // twin.bind_account[_pl] = currPlat
+            //         _.$store.commit('setUserInfo', userInfo)
+            //         UTILS.setStore('userInfo',userInfo);
+            //
+            //         if(currPlat.platform == 'autohome') {
+            //             this.showBbsList = true
+            //         }else {
+            //             this.showBbsList = false
+            //         }
+            //         // 选中左边菜单
+            //         let path_name = this.$route.name;
+            //         this.activeName = currPlat.platform + '-' + path_name
+            //         this.openMenu = currPlat.platform
+            //         if (this.$route.path == '/welcome') { // 没有路由时
+            //             this.$router.push({
+            //                 path: '/unfinished',
+            //                 query: {
+            //                     id: currPlat.platform
+            //                 }
+            //             })
+            //         }
+            //     }else {
+            //         if (this.$route.path != '/welcome') { // 没有路由时
+            //             this.$router.push({
+            //                 path: '/welcome'
+            //             })
+            //         }
+            //     }
+            //
+            //
+            //
+            // }else {
+            //     this.$store.commit('setUserInfo',null)
+            //     if (this.$route.path != '/login') { // 没有路由时
+            //         this.$router.replace({
+            //             path: '/login'
+            //         })
+            //     }
+            //
+            // }
         },
         watch: {
             changePlatform() {
@@ -299,17 +356,23 @@
             $route: { // 监听路由变化
                 handler: function (val, oldVal) {
                     window.console.log('path----')
+                    window.console.log(this.platformList)
                     window.console.log(this.$store.state.currentPlatform)
                     if(this.$route.path == '/login') {
                         this.showLogin = true
                     }else {
                         this.showLogin = false
                     }
-                    this.platformList = []
-                    this.platformList = this.$store.state.platformList
+                    // this.platformList = []
+                    this.platformList = UTILS.getStore('media_platform')
                     this.currentPlatform = this.$store.state.currentPlatform
                     this.menuKey = (new Date()).valueOf();
-                    this.userInfo = this.$store.state.userInfo
+                    this.userInfo = this.$store.state.userInfo;
+                    if(this.currentPlatform.platform == 'autohome') {
+                        this.showBbsList = true
+                    }else {
+                        this.showBbsList = false
+                    }
                     // 选中左边菜单
                     let path_name = this.$route.name;
                     if(path_name == 'abnormal') {
@@ -325,11 +388,11 @@
             }
         },
         computed: {
-            changePlatform() {
+            changePlatform: function() {
 
                 window.console.log('changePlatform**********************************')
                 window.console.log(this.$store.state.currentPlatform)
-                this.platformList = this.$store.state.platformList
+                // this.platformList = UTILS.getStore('media_platform')
                 this.currentPlatform = this.$store.state.currentPlatform
                 this.userInfo = this.$store.state.userInfo
                 window.console.log(this.currentPlatform)
@@ -379,6 +442,7 @@
 
     .off-rl-footer-box {
         padding-bottom: 35px;
+        text-align: center;
     }
 
     .refresh-ico-box {
@@ -397,4 +461,5 @@
         color: #B4BCCC;
         cursor: pointer;
     }
+
 </style>

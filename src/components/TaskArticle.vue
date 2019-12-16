@@ -1,34 +1,58 @@
 <template>
     <div>
-        <a v-if="!is_unfinished" target="_blank" class="wline2 t-title" :href="item.url"><Tag color="warning" :class="item.tagColor" v-if="item.tagName">{{item.tagName}}</Tag>{{ item.title }}
-            <i v-if="item.hasImg" class="iconfont iconqyyx_picture has-media-ico"></i>
-            <i v-if="item.hasVideo" class="iconfont iconqyyx_video has-media-ico"></i>
+        <a v-if="!is_unfinished" target="_blank" class="wline2 t-title" :href="subItem.url"><Tag color="warning" :class="subItem.tagColor" v-if="subItem.tagName">{{subItem.tagName}}</Tag>{{ subItem.title }}
+            <i v-if="subItem.hasImg" class="iconfont has-media-ico" :class="imgIco[currPlat]"></i>
+            <i v-if="subItem.hasVideo" class="iconfont  has-media-ico" :class="videoIco[currPlat]"></i>
         </a>
-        <div v-if="is_unfinished"  class="wline2 t-title"><Tag color="warning" :class="item.tagColor" v-if="item.tagName">{{item.tagName}}</Tag>{{ item.title }}
-            <i v-if="item.hasImg" class="iconfont iconqyyx_picture has-media-ico"></i>
-            <i v-if="item.hasVideo" class="iconfont iconqyyx_video has-media-ico"></i>
+        <div v-if="is_unfinished"  class="wline2 t-title"><Tag color="warning" :class="subItem.tagColor" v-if="subItem.tagName">{{subItem.tagName}}</Tag>{{ subItem.title }}
+            <i v-if="subItem.hasImg" class="iconfont has-media-ico" :class="imgIco[currPlat]"></i>
+            <i v-if="subItem.hasVideo" class="iconfont  has-media-ico" :class="videoIco[currPlat]"></i>
         </div>
         <div class="td-bottom">
-            <span class="td-author">{{item.author}} {{item.time}}创建</span>
+            <span class="td-author">{{subItem.author}} {{subItem.time}}创建</span>
         </div>
     </div>
 </template>
 
 <script>
+    import * as UTILS from '../api/utils'
     export default {
         name: "TaskArticle",
         props: {
             item:Object
         },
+        computed: {
+            subItem() {
+                var _ = this;
+                var item = _.item;
+                var plat = UTILS.getStore('currPlat').platform;
+                _.currPlat = plat
+                return item
+            }
+        },
         data() {
             return {
                 is_unfinished: false,
+                currPlat: '',
+                imgIco: {
+                    autohome: 'iconqyyx_picture',
+                    qq: 'iconmt_picture_',
+                    sina: 'iconmt_picture_1',
+                    weibo: 'iconmt_picture_2',
+                },
+                videoIco : {
+                    autohome: 'iconqyyx_video',
+                    qq: 'iconmt_video_2',
+                    sina: 'iconmt_video_',
+                    weibo: 'iconmt_video_1',
+                }
             }
         },
         mounted() {
             if(this.$route.name == 'unfinished') {
                 this.is_unfinished = true
             }
+
         }
     }
 </script>

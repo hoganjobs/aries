@@ -196,16 +196,23 @@
                         width: 240
                     }
                 ],
+                media_platform: '',
             }
         },
         methods: {
             getTicketsCount(status, get_error_status, type, error_status) {
                 var _ = this;
+                let bbs_id = UTILS.getStore('bbs')? UTILS.getStore('bbs').bbs_id : '';
+                let app_name = UTILS.getStore('currPlat')? UTILS.getStore('currPlat').app_name : '';
+                let media_platform = UTILS.getStore('currPlat')? UTILS.getStore('currPlat').platform : '';
 
                 var params = {
                     status: status,
                     get_error_status: get_error_status || null,
                     error_status: error_status || null,
+                    media_platform: media_platform,
+                    bbs_id: bbs_id,
+                    app_name: app_name,
                     is_count: true
                 }
                 API.getTickets(params).then(function (res) {
@@ -249,7 +256,14 @@
                 var _ = this;
                 _.spinShow = true
                 var active = _.active;
+                let bbs_id = UTILS.getStore('bbs')? UTILS.getStore('bbs').bbs_id : '';
+                let app_name = UTILS.getStore('currPlat')? UTILS.getStore('currPlat').app_name : '';
+                let media_platform = UTILS.getStore('currPlat')? UTILS.getStore('currPlat').platform : '';
+
                 var params = {
+                    bbs_id: bbs_id,
+                    app_name: app_name,
+                    media_platform: media_platform,
                     status: status,
                     get_error_status: get_error_status || null,
                     error_status: error_status || null,
@@ -323,14 +337,17 @@
                     let hasVideo = false;
                     let hasImg = false;
                     if(dsc.article_type) {
-                        if (dsc.article_type.indexOf('jh') > -1) {
-                            tagName = '精华'
-                            tagColor = 'bg-orange'
-                        } else if (dsc.article_type.indexOf('jx') > -1) {
-                            tagName = '精选'
+                        // 问题 < 精华 < 精选
+                        if (dsc.article_type.indexOf('qa') > -1) {
+                            tagName = '问题';
                             tagColor = 'bg-blue'
-                        } else if (dsc.article_type.indexOf('qa') > -1) {
-                            tagName = '问题'
+                        }
+                        if (dsc.article_type.indexOf('jh') > -1) {
+                            tagName = '精华';
+                            tagColor = 'bg-orange'
+                        }
+                        if (dsc.article_type.indexOf('jx') > -1) {
+                            tagName = '精选';
                             tagColor = 'bg-blue'
                         }
                         if (dsc.article_type.indexOf('video') > -1) {
@@ -438,6 +455,7 @@
         },
         created() {
             var _ = this;
+            _.media_platform = _.$route.query.id
             _.getTicketsCount('acknowledged', true, 'abnormal');
             _.getTicketsCount('acknowledged', false, 'pending', 'none');
             _.getTicketsCount('confirmed', false, 'finished')

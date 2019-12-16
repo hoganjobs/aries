@@ -14,7 +14,7 @@
             <MenuItem :name="item.platform+'-unfinished'" @click.native="toTask(item,'unfinished')">待做任务</MenuItem>
             <MenuItem :name="item.platform+'-finished'" @click.native="toTask(item,'finished')">已做任务</MenuItem>
         </Submenu>
-        <Modal v-model="rlModal" :title="rlModalTitle" width="640px">
+        <Modal class="bl-rl-md" v-model="rlModal" :title="rlModalTitle" width="640px">
             <div>
                 <div class="md-title">关联{{item.name}}账号</div>
                 <div class="rl-body">
@@ -49,6 +49,8 @@
 <script>
     import * as API from '../api/api'
     import * as UTILS from '../api/utils'
+    import bus from  '../api/bus'
+    import merge from 'webpack-merge'
     import {Menu, Submenu, MenuItem} from 'view-design'
 
     export default {
@@ -96,11 +98,23 @@
                         var _d = res.data
                         if (_d.result) {
                             UTILS.blToast('关联成功');
-                            currPlat.user_name = _d.oauth_user_info.name
-                            currPlat.user_avatar = _d.oauth_user_info.avatar
-                            currPlat.is_relation = true
+                            let oauth_user_info = {
+                                name:_d.oauth_user_info.name,
+                                avatar:_d.oauth_user_info.avatar,
+                                user_id:_d.oauth_user_info.user_id,
+                            }
+                            currPlat.user = oauth_user_info
+                            currPlat.is_relation = true;
+                            let m_ls = UTILS.getStore('media_platform');
+                            for (let i = 0; i<m_ls.length; i++) {
+                                if(m_ls[i].platform == open_type) {
+                                    m_ls[i].is_relation = true;
+                                    m_ls[i].user = oauth_user_info;
+                                }
+                            }
                             let user = UTILS.getStore('userInfo');
-                            user.bind_account[open_type] = currPlat
+                            user.bind_account[open_type] = oauth_user_info
+                            UTILS.setStore('media_platform', m_ls)
                             UTILS.setStore('userInfo', user)
                             UTILS.setStore('currPlat', currPlat)
                             _.$store.commit('changePlatform', currPlat)
@@ -110,6 +124,8 @@
                                     id: open_type
                                 }
                             })
+                            bus.$emit('unfinishedMenuClick','unfinishedMenuClick')
+
                         } else {
                             UTILS.blToast(_d.msg);
 
@@ -132,40 +148,59 @@
             get_info() {
                 window.console.log('render menu')
                 this.info = this.$store.state.currentPlatform
-                if (this.item.platform == this.info.platform && this.info.is_relation) {
-                    this.is_relation = true
-                    let path = this.$route.name;
-                    let plat = this.$route.query.id;
 
-                    if (plat == this.info.platform) {
-                        this.menuActive = plat + '-' + path
+                if(this.item.is_relation ) {
+                    this.is_relation = true
+                    if (this.item.platform == this.info.platform && this.info.is_relation) {
+                        let path = this.$route.name;
+                        let plat = this.$route.query.id;
+
+                        if (plat == this.info.platform) {
+                            this.menuActive = plat + '-' + path
+                        }
+
                     }
+                }else {
+                    this.is_relation = false
+
                 }
             },
             toTask(item, type) {
-                var path = '/' + type;
-                // var cur_plat = this.$store.state.userInfo.bind_account[item.platform];
-                // window.console.log(this.$store.state.userInfo)
-                // cur_plat.is_relation = true;
-                //
-                // this.$store.commit('changePlatform',cur_plat)
-                if (path != this.$route.path) {
+                window.console.log('toTask toTask toTask')
+                window.console.log(item)
+
+                this.toTaskList(item, type)
+
+
+            },
+            toFinished(item) {
+
+                this.toTaskList(item,'finished')
+            },
+            toTaskList(item,page) {
+                var refresh = 'refresh' +  (new Date()).valueOf()
+
+                var _ = this;
+                this.$store.commit('changePlatform', item)
+                UTILS.setStore('currPlat', item)
+                this.$emit('clickTaskMenu', 'change')
+                bus.$emit(page+'MenuClick',refresh)
+
+                if(_.$route.name != page) {
                     this.$router.push({
-                        path: path,
+                        path: '/'+page,
                         query: {
                             id: this.item.platform
                         }
                     })
+                }else {
+                    this.$router.replace({
+                        query: merge(this.$route.query,{'id':this.item.platform})
+                    })
+                    bus.$emit(page+'Refresh',refresh)
                 }
 
-            },
-            toFinished() {
-                this.$router.push({
-                    path: '/finished',
-                    query: {
-                        id: this.item.platform
-                    }
-                })
+
             }
         },
         watch: {

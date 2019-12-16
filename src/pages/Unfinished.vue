@@ -1,14 +1,20 @@
 <template>
     <div class="unfinished-box">
         <div class="abnormal-task">
-            <div class="type-select-box" v-show="tabIndex == 'all'">
-                <Select v-model="selectVal" :value="selectVal" @on-change="typeChange" style="width:94px">
-                    <Option v-for="item in typeList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-                </Select>
+            <div v-show="showTabs">
+                <div class="type-select-box" v-show="tabIndex == 'all'">
+                    <Select v-model="selectVal" :value="selectVal" @on-change="typeChange" style="width:94px">
+                        <Option v-for="item in typeList" :value="item.value" :key="item.value">{{ item.label }}</Option>
+                    </Select>
+                </div>
             </div>
 
+
             <div class="bl-tabs">
-                <Tabs value="all" @on-click="clickTab">
+                <div class="task-list-top" v-show="!showTabs">
+                    待做任务列表
+                </div>
+                <Tabs value="all" @on-click="clickTab" v-show="showTabs">
                     <TabPane label="帖子" name="all">
 
                     </TabPane>
@@ -93,6 +99,7 @@
         },
         data() {
             return {
+                showTabs: false, // 显示过滤
                 spinShow: false,
                 pageTotal: 0,
                 begin: 0,
@@ -139,6 +146,8 @@
                 ],
                 curTabType: '', // 当前tab类型
                 tabIndex: 'all', // 当前tab
+                media_platform: '', // 当前平台
+                bbsList: [], // 论坛列表
             }
         },
         methods: {
@@ -178,10 +187,17 @@
             getTaskGrab() {
                 var _ = this;
                 _.spinShow = true;
+                let bbs_id = UTILS.getStore('bbs')? UTILS.getStore('bbs').bbs_id : '';
+                let app_name = UTILS.getStore('currPlat')? UTILS.getStore('currPlat').app_name : '';
+                let media_platform = UTILS.getStore('currPlat')? UTILS.getStore('currPlat').platform : '';
                 var params = {
                     article_type: _.curTabType || '',
                     begin: _.begin * _.limit,
                     limit: _.limit,
+                    media_platform: media_platform,
+                    app_name: app_name,
+                    bbs_id: bbs_id,
+
                 }
                 API.getTaskGrab(params).then(function (res) {
                     _.spinShow = false;
@@ -197,10 +213,21 @@
                     UTILS.blToast(_.GLOBAL.sysErrMsg)
                 })
             },
+
             getTaskCount() {
                 var _ = this;
+
+                let bbs_id = UTILS.getStore('bbs')? UTILS.getStore('bbs').bbs_id : '';
+                let app_name = UTILS.getStore('currPlat')? UTILS.getStore('currPlat').app_name : '';
+                let media_platform = UTILS.getStore('currPlat')? UTILS.getStore('currPlat').platform : '';
+                this.showTabs = UTILS.getStore('currPlat').platform == 'autohome' ? true : false
+
+
                 var params = {
                     article_type: _.curTabType || '',
+                    media_platform: media_platform,
+                    app_name: app_name,
+                    bbs_id: bbs_id,
                     is_count: true
                 }
                 API.getTaskGrab(params).then(function (res) {
@@ -217,8 +244,12 @@
             toComment(art) {
                 var _ = this;
                 window.console.log(art)
+                let media_platform = UTILS.getStore('currPlat')? UTILS.getStore('currPlat').platform : '';
+                let app_name = UTILS.getStore('currPlat')? UTILS.getStore('currPlat').app_name : '';
                 var params = new URLSearchParams();
                 params.append('task_id', art.task_id);
+                params.append('media_platform', media_platform);
+                params.append('app_name', app_name);
                 params.append('interactive_type', 'random');
                 var winRef = window.open("", "_blank");//打开一个新的页面
                 API.taskGrad(params, 'twin_web').then(function (res) {
@@ -268,14 +299,17 @@
                     let hasVideo = false;
                     let hasImg = false;
                     if(dsc.article_type) {
-                        if (dsc.article_type.indexOf('jh') > -1) {
-                            tagName = '精华'
-                            tagColor = 'bg-orange'
-                        } else if (dsc.article_type.indexOf('jx') > -1) {
-                            tagName = '精选'
+                        // 问题 < 精华 < 精选
+                        if (dsc.article_type.indexOf('qa') > -1) {
+                            tagName = '问题';
                             tagColor = 'bg-blue'
-                        } else if (dsc.article_type.indexOf('qa') > -1) {
-                            tagName = '问题'
+                        }
+                        if (dsc.article_type.indexOf('jh') > -1) {
+                            tagName = '精华';
+                            tagColor = 'bg-orange'
+                        }
+                        if (dsc.article_type.indexOf('jx') > -1) {
+                            tagName = '精选';
                             tagColor = 'bg-blue'
                         }
                         if (dsc.article_type.indexOf('video') > -1) {
@@ -323,6 +357,11 @@
                 bus.$on(key,() => {
                     this.clickTab(this.curTabType)
                 })
+                let key2 = _.$route.name + 'MenuClick';
+                bus.$off(key2);
+                bus.$on(key2,() => {
+                    this.showTabs = UTILS.getStore('currPlat').platform == 'autohome' ? true : false
+                })
             }
 
         },
@@ -330,8 +369,10 @@
             this.getRefreshStatus();
         },
         created() {
-            this.getTaskCount()
-            UTILS.pageJump()
+            var _ = this;
+            _.media_platform = _.$route.query.id
+            _.getTaskCount()
+
 
         },
 
@@ -386,5 +427,11 @@
         color: #333333;
         width: 453px;
         line-height: 22px;
+    }
+    .task-list-top {
+        padding: 16px 20px;
+        font-size: 16px;
+        color: #333;
+        border-bottom: 1px solid #e1e4eb;
     }
 </style>

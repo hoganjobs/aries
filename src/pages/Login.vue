@@ -41,7 +41,7 @@
                 var _ = this;
                 window.console.log(uuid)
                 var params = new URLSearchParams();
-                params.append('twin_type', 'web');
+                params.append('is_twin_pc', true);
                 params.append('login_uuid', uuid);
 
                 var has_user_info = this.$store.state.userInfo || null
@@ -103,6 +103,8 @@
                             }
 
                         }else {
+                            let media_platform = twin.media_platform;
+                            UTILS.setStore('media_platform', media_platform)
                             _.$router.push({
                                 path: '/welcome',
                                 query: {

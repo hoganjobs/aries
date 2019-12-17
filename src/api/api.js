@@ -30,7 +30,7 @@ export const taskResolved = (params, from) => {
     return putFormData('/api/v1/twin/task/resolved', params, from);
 };
 
-//绑定第三方接口
+//关联第三方接口
 export const bindOthers = (params) => {
     return post('/api/v1/twin/bind', params);
 };

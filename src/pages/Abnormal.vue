@@ -155,7 +155,7 @@
                 limit: 10,
                 begin: 0,
 
-                confirm_tickets:[], // 任务线索，排查帐号与绑定帐号不一致且无关联人员时，抓取的可验收数据
+                confirm_tickets:[], // 任务线索，排查帐号与关联帐号不一致且无关联人员时，抓取的可验收数据
                 account_data: {}, // 排查帐号信息
 
                 changeAccountLoading: false,

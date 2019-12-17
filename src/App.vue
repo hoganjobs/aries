@@ -74,7 +74,7 @@
             </div>
             <div slot="footer">
                 <div class="off-rl-footer-box">
-                    <Button class="rl-btn primary-line-btn" size="large" :loading="unbindLoading"  @click="unbind">解除绑定</Button>
+                    <Button class="rl-btn primary-line-btn" size="large" :loading="unbindLoading"  @click="unbind">解除关联</Button>
 
                     <Button class="rl-btn " type="primary" size="large" @click="hideUnRelation">不解除</Button>
                 </div>
@@ -133,10 +133,10 @@
                 this.openMenu = plat
             },
 
-            // 解除绑定
+            // 解除关联
             unbind() {
                 var _ = this;
-                window.console.log('解除绑定')
+                window.console.log('解除关联')
                 window.console.log(_.currentPlatform)
                 _.unbindLoading = true
                 var platform = _.currentPlatform.platform
@@ -301,7 +301,7 @@
             //     var bind = userInfo.bind_account;
             //     window.console.log('bind_account')
             //     window.console.log(bind)
-            //     var currBind =  JSON.stringify(bind[_pl]); // 当前绑定的账号
+            //     var currBind =  JSON.stringify(bind[_pl]); // 当前关联的账号
             //     currBind = JSON.parse(currBind)
             //     Watermark.set(userInfo.user_name)
             //

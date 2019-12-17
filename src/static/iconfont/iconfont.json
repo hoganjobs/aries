@@ -179,6 +179,55 @@
       "font_class": "mt_video_2",
       "unicode": "e668",
       "unicode_decimal": 58984
+    },
+    {
+      "icon_id": "12041576",
+      "name": "qyyx_comment_2",
+      "font_class": "qyyx_comment_",
+      "unicode": "e669",
+      "unicode_decimal": 58985
+    },
+    {
+      "icon_id": "12041577",
+      "name": "mt_reply",
+      "font_class": "mt_reply",
+      "unicode": "e66a",
+      "unicode_decimal": 58986
+    },
+    {
+      "icon_id": "12050731",
+      "name": "mt_follow",
+      "font_class": "mt_follow",
+      "unicode": "e66b",
+      "unicode_decimal": 58987
+    },
+    {
+      "icon_id": "12050732",
+      "name": "mt_good",
+      "font_class": "mt_good",
+      "unicode": "e66c",
+      "unicode_decimal": 58988
+    },
+    {
+      "icon_id": "12057977",
+      "name": "fs-connect",
+      "font_class": "fs-connect1",
+      "unicode": "e66f",
+      "unicode_decimal": 58991
+    },
+    {
+      "icon_id": "12057978",
+      "name": "fs-disconnect",
+      "font_class": "fs-disconnect1",
+      "unicode": "e670",
+      "unicode_decimal": 58992
+    },
+    {
+      "icon_id": "12082947",
+      "name": "mt_share",
+      "font_class": "mt_share",
+      "unicode": "e66d",
+      "unicode_decimal": 58989
     }
   ]
 }

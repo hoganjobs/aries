@@ -78,7 +78,7 @@
             }
         },
         methods: {
-            // 绑定第三方账号
+            // 关联第三方账号
             bind() {
                 var _ = this;
                 var val = _.linkValue;

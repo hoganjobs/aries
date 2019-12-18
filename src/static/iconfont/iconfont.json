@@ -228,6 +228,20 @@
       "font_class": "mt_share",
       "unicode": "e66d",
       "unicode_decimal": 58989
+    },
+    {
+      "icon_id": "12109916",
+      "name": "mt_qiche_newposts",
+      "font_class": "mt_qiche_newposts",
+      "unicode": "e672",
+      "unicode_decimal": 58994
+    },
+    {
+      "icon_id": "12135120",
+      "name": "qyyx_qiche_comment",
+      "font_class": "qyyx_qiche_comment",
+      "unicode": "e671",
+      "unicode_decimal": 58993
     }
   ]
 }

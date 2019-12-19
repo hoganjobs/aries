@@ -35,9 +35,9 @@ let setWatermark = (str) => {
     div.style.zIndex = '1111'
     // div.style.width = document.documentElement.clientWidth - 100 + 'px'
     // div.style.height = document.documentElement.clientHeight - 100 + 'px'
-    div.style.width = '900px'
+    div.style.width = '755px'
     div.style.height = '800px'
-    div.style.marginTop = '-400px'
+    div.style.marginTop = '-255px'
     div.style.marginLeft = '-310px'
     div.style.background = 'url(' + can.toDataURL('image/png') + ') left top repeat'
     document.body.appendChild(div)

@@ -111,3 +111,43 @@ export const heartbeat = (params) => {
 export const optionsList = (params) => {
     return get('/api/v1/twin/list/options', params);
 };
+
+/**
+ * 获取要关注的deeplink
+ * @param media_platform 平台
+ * @param action_type = web
+ * @returns {AxiosPromise}
+ */
+export const getBindAccount = (params) => {
+    return get('/api/v1/twin/mobile/bind', params);
+};
+
+/**
+ * 关联账号
+ * @param open_type 平台
+ * @param name 平台中的昵称
+ * @returns {AxiosPromise}
+ */
+export const bindAccount = (params) => {
+    return post('/api/v1/twin/mobile/bind', params);
+};
+
+/**
+ * 获取粉丝列表
+ * @param open_type 平台
+ * @param name 平台中的昵称
+ * @returns {AxiosPromise}
+ */
+export const getFans = (params) => {
+    return get('/api/v1/twin/autohome/fans', params);
+};
+
+/**
+ * 获取粉丝信息
+ * @param media_platform 平台
+ * @param target_id 
+ * @returns {AxiosPromise}
+ */
+export const getFansInfo = (params) => {
+    return get('/api/v1/twin/bind/info', params);
+};

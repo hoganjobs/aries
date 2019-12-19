@@ -242,6 +242,111 @@
       "font_class": "qyyx_qiche_comment",
       "unicode": "e671",
       "unicode_decimal": 58993
+    },
+    {
+      "icon_id": "12179582",
+      "name": "comment_wangyi",
+      "font_class": "comment_wangyi",
+      "unicode": "e673",
+      "unicode_decimal": 58995
+    },
+    {
+      "icon_id": "12179583",
+      "name": "comment_baidutieba",
+      "font_class": "comment_baidutieba",
+      "unicode": "e674",
+      "unicode_decimal": 58996
+    },
+    {
+      "icon_id": "12179584",
+      "name": "comment_tengxun",
+      "font_class": "comment_tengxun",
+      "unicode": "e675",
+      "unicode_decimal": 58997
+    },
+    {
+      "icon_id": "12179585",
+      "name": "comment_xinlangweibo",
+      "font_class": "comment_xinlangweibo",
+      "unicode": "e676",
+      "unicode_decimal": 58998
+    },
+    {
+      "icon_id": "12179586",
+      "name": "comment_xinlangxinwen",
+      "font_class": "comment_xinlangxinwen",
+      "unicode": "e677",
+      "unicode_decimal": 58999
+    },
+    {
+      "icon_id": "12179587",
+      "name": "share_xinlangweibo",
+      "font_class": "share_xinlangweibo",
+      "unicode": "e678",
+      "unicode_decimal": 59000
+    },
+    {
+      "icon_id": "12179588",
+      "name": "share_jinritoutiao",
+      "font_class": "share_jinritoutiao",
+      "unicode": "e679",
+      "unicode_decimal": 59001
+    },
+    {
+      "icon_id": "12180418",
+      "name": "mdy_like",
+      "font_class": "mdy_like",
+      "unicode": "e67a",
+      "unicode_decimal": 59002
+    },
+    {
+      "icon_id": "12180419",
+      "name": "mdy_play",
+      "font_class": "mdy_play",
+      "unicode": "e67b",
+      "unicode_decimal": 59003
+    },
+    {
+      "icon_id": "12183161",
+      "name": "mfh_comment",
+      "font_class": "mfh_comment",
+      "unicode": "e67c",
+      "unicode_decimal": 59004
+    },
+    {
+      "icon_id": "12187397",
+      "name": "mgb_posting",
+      "font_class": "mgb_posting",
+      "unicode": "e67d",
+      "unicode_decimal": 59005
+    },
+    {
+      "icon_id": "12187818",
+      "name": "mgb_comment",
+      "font_class": "mgb_comment",
+      "unicode": "e67e",
+      "unicode_decimal": 59006
+    },
+    {
+      "icon_id": "12188190",
+      "name": "mxq_comment",
+      "font_class": "mxq_comment",
+      "unicode": "e67f",
+      "unicode_decimal": 59007
+    },
+    {
+      "icon_id": "12188978",
+      "name": "mydzx_comment",
+      "font_class": "mydzx_comment",
+      "unicode": "e680",
+      "unicode_decimal": 59008
+    },
+    {
+      "icon_id": "12195477",
+      "name": "refresh",
+      "font_class": "refresh",
+      "unicode": "e681",
+      "unicode_decimal": 59009
     }
   ]
 }

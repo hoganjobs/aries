@@ -5,7 +5,6 @@ import Task from '../pages/Task'
 import Unfinished from '../pages/Unfinished'
 import Finished from '../pages/Finished'
 import Welcome from '../pages/Welcome'
-import Find from '../pages/Find'
 import Abnormal from '../pages/Abnormal'
 
 
@@ -49,11 +48,6 @@ export default new Router({
       path: '/welcome',
       name: 'welcome',
       component: Welcome
-    },
-    {
-      path: '/find',
-      name: 'find',
-      component: Find
     },
     {
       path: '/abnormal',

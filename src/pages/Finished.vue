@@ -85,7 +85,6 @@
                 </TabPane>
                 <TabPane :label="'已验收（'+ pageTotal.finished +'）'" name="finished">
                     <div v-show="finishedTb.length > 0">
-
                         <div class="bl-task-table">
                             <Table :data="finishedTb" :columns="finishedTbColumns">
                                 <template slot-scope="{ row }" slot="title">
@@ -105,9 +104,8 @@
                                 </div>
                             </div>
                         </div>
-                        <NoData v-show="finishedTb.length == 0 && !spinShow"></NoData>
-
                     </div>
+                    <NoData v-show="finishedTb.length == 0 && !spinShow"></NoData>
                 </TabPane>
             </Tabs>
         </div>
@@ -363,7 +361,7 @@
                             task_id: dti.task_id || '',
                             ticket_id: dti.ticket_id || '',
                             title: dti.summary || '',
-                            url: dsc.article_url || '',
+                            url: dsc.url || '',
                             tag: 'top',
                             tagName: tagName,
                             tagColor: tagColor,
@@ -385,8 +383,7 @@
                     if (active == 'pending') {
                         tb_item.hd = {
                             exp: UTILS.getDateDiff(dti.resolved_at * 1000, 2),
-                            // related_info: dti.steps_to_reproduce
-                            related_info: '萨哈收到货教室里看到的hi阿萨德哈萨哈收到货教室里看到的hi阿萨德哈萨哈收到货教室里看到的hi阿萨德哈萨哈收到货教室里看到的hi阿萨德哈'
+                            related_info: dti.steps_to_reproduce
                         }
                     }
                     if (active == 'finished') {
@@ -394,8 +391,7 @@
                     }
                     dt.push(tb_item)
                 }
-                this[active + 'Tb'] = dt
-
+                this[active + 'Tb'] = dt;
             },
             formatDate(date) {
                 const y = date.getFullYear();

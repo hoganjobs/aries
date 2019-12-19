@@ -95,7 +95,17 @@ export const blToast = (msg, code) => {
         blLogout()
     }
     Message.info(msg)
-
+    /**
+     * msg可以是字符串或对象;
+     * 当为字符串时，直接显示内容;
+     * 当为对象时:
+     * content  提示内容 | String | -
+     * render  自定义描述内容，使用 Vue 的 Render 函数 | Function | -
+     * duration  自动关闭的延时，单位秒，不关闭可以写 0 | Number | 1.5
+     * onClose  关闭时的回调 | Function | -
+     * closable  是否显示关闭按钮 | Boolean | false
+     * background  是否显示背景色 | Boolean | false
+     */
 }
 
 /**

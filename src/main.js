@@ -23,8 +23,13 @@ router.beforeEach((to, from, next) => {
   if (/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)) {
     if(window.location.href.indexOf('http://192.168.1.40/') < 0) {
       if(window.location.href.indexOf('/pc/') > -1) {
-        window.location.href = document.location.protocol + '//' + window.location.host+ '/m/index.html#/'
+        window.location.href = 'https://' + window.location.host+ '/m/index.html#/'
         return
+      }
+    } else {
+      var targetProtocol = "https:";
+      if (window.location.protocol != targetProtocol){
+        window.location.href = targetProtocol + window.location.href.substring(window.location.protocol.length);
       }
     }
 

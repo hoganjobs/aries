@@ -44,7 +44,8 @@
                 params.append('is_twin_pc', true);
                 params.append('login_uuid', uuid);
 
-                var has_user_info = this.$store.state.userInfo || null
+                // var has_user_info = this.$store.state.userInfo || null
+                var has_user_info = false
                 var timer;
                 clearTimeout(timer);
                 API.getLogin(params).then(function (res) {
@@ -151,12 +152,7 @@
 
         },
         created() {
-            var userInfo = UTILS.getStore('userInfo')
-            if(!userInfo) {
-                this.getLoginQrcode()
-            }else {
-
-            }
+            this.getLoginQrcode()
         }
     }
 </script>

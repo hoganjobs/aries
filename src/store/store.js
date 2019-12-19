@@ -7,74 +7,24 @@ const state = {
   is_refresh: '', // 是否点击刷新
   count: 0,
   currentPlatform: {
-    user_avatar: "http://x.autoimg.cn/space/images/head_120X120.png",
+    user_avatar: "",
     is_relation: false,
-    name: "汽车之家",
-    user_name: "星空牧民",
-    platform: "autohome",
-    user_id: "172711065",
+    name: "",
+    user_name: "",
+    platform: "",
+    user_id: "",
     user: {
       name:'',
       user_id:'',
       avatar:''
     }
   },
-  platformList: [
-    {
-      platform: 'autohome',
-      name: '汽车之家',
-      is_relation: false,
-      user: {
-        name: '哈杀鸡',
-        avatar: 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1565819561,2665558554&fm=26&gp=0.jpg'
-      },
-    },
-    // {
-    //   platform: 'sina',
-    //   name: '新浪微博',
-    //   is_relation: false,
-    //   user: {
-    //     name: '穿靴子的猫',
-    //     avatar: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3253377402,4101385578&fm=26&gp=0.jpg'
-    //   },
-    // },
-    // {
-    //   platform: 'tieba',
-    //   name: '百度贴吧',
-    //   is_relation: false,
-    //   user: {
-    //     name: '哈杀鸡',
-    //     avatar: 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1565819561,2665558554&fm=26&gp=0.jpg'
-    //   },
-    // },
-    // {
-    //   platform: 'qq',
-    //   name: '腾讯新闻',
-    //   is_relation: false,
-    //   user: {
-    //     name: '哈杀鸡',
-    //     avatar: 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1565819561,2665558554&fm=26&gp=0.jpg'
-    //   },
-    // },
-    // {
-    //   platform: 'net_ease',
-    //   name: '网易新闻',
-    //   is_relation: false,
-    //   user: {
-    //     name: '哈杀鸡',
-    //     avatar: 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=1565819561,2665558554&fm=26&gp=0.jpg'
-    //   },
-    // },
-  ],
+  platformList: [],
   userInfo:null,
-  // userInfo: {
-  //   name: '马什么梅',
-  //   s_name: '网页分身1号',
-  //   avatar: '',
-  // },
   currentPage: 'unfinished',
   platform_homepage: {
-    autohome: 'https://i.autohome.com.cn/'
+    autohome: 'https://i.autohome.com.cn/',
+    weibo: 'https://weibo.com/'
   },
 };
 

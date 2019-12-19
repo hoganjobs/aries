@@ -82,13 +82,11 @@
     }
   }
 </script>
-<style lang="less" scoped>
-  @import "../static/css/app";
-  @import "../static/css/chat_area";
-</style>
-<style scoped>
-  .task-box {
-    width: 100vw;
-    height: 100vh;
-  }
+<style scoped lang="less">
+@import "../static/css/app";
+@import "../static/css/chat_area";
+.task-box {
+  width: 100vw;
+  height: 100vh;
+}
 </style>

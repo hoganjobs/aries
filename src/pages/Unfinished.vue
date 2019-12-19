@@ -323,7 +323,7 @@
                         title: {
                             task_id: dti.task_id,
                             title: dti.summary,
-                            url: dsc.article_url,
+                            url: dsc.url,
                             tag: 'top',
                             tagName: tagName,
                             tagColor: tagColor,

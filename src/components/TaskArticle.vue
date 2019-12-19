@@ -72,7 +72,7 @@
         font-size: 16px;
         color: #333333;
         max-width: 630px;
-        line-height: 20px;
+        line-height: 22px;
         min-height: 44px;
     }
     .has-media-ico {

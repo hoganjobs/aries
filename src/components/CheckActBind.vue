@@ -72,12 +72,27 @@
         </div>
         <!-- result状态 -->
         <div class="f-result" v-show="modalStatus == 'result'">
+            <div class="fans-refreshed-box" @click="confirmScan">
+                <i class="iconfont iconrefresh"></i>
+            </div>
             <div v-show="modalStatus == 'result'">
                 <div
                     class="f-tag"
                     :class="{ active: curFansItem.user_id == itemf.user_id }"
                     v-for="(itemf, index) in fansList"
+                    :key="'f' + index"
                     @click="fItemClick(itemf)"
+                    v-show="info.platform !== 'tieba'"
+                >
+                    <span class="f-tag-text">{{ itemf.name }}</span>
+                </div>
+                <div
+                    class="f-tag"
+                    :class="{ active: curFansItem.name == itemf.name }"
+                    v-for="(itemf, index) in fansList"
+                    :key="index"
+                    @click="fItemClick(itemf)"
+                    v-show="info.platform == 'tieba'"
                 >
                     <span class="f-tag-text">{{ itemf.name }}</span>
                 </div>
@@ -155,7 +170,7 @@ export default {
         confirmScan() {
             let _ = this;
             this.modalStatus = "scan";
-            let duration = 2 * 1000;
+            let duration = 1 * 1000;
             clearTimeout(_.timerFans);
             _.timerFans = setTimeout(function() {
                 _.getFans();
@@ -163,6 +178,7 @@ export default {
         },
         cancelScan() {
             this.modalStatus = "start";
+            clearTimeout(this.timerFans);
         },
         confirmCheck() {
             let curr_fans = this.curFansItem;
@@ -262,6 +278,7 @@ export default {
     background: #ffffff;
     padding: 22px 32px 36px 32px;
     margin-bottom: 20px;
+    position: relative;
 }
 .f-title {
     font-family: PingFang-SC-Medium;
@@ -340,5 +357,18 @@ export default {
     color: #2d8cf0;
     border: 1px solid #2d8cf0;
     background-color: #fff;
+}
+.fans-refreshed-box {
+    position: absolute;
+    right: 5px;
+    top: 12px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+}
+.fans-refreshed-box .iconfont{
+    font-size: 20px;
+    color: #333;
 }
 </style>

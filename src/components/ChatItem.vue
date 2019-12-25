@@ -3,7 +3,7 @@
         <div v-if="!is_relation" class="chat-item dpflex" :class="isCurrent ? 'current' : ''">
             <div class="name">{{item.name}}</div>
             <div class='c-right'>
-                <i class="iconfont iconfs-connect1 t-ico" @click="showRelation"></i>
+                <i class="iconfont iconfs-connect t-ico" @click="showRelation"></i>
             </div>
         </div>
 
@@ -480,9 +480,6 @@
     .rl-btn.middle {
         display: block;
         margin: 0 auto 28px;
-    }
-    .rl-btn.right {
-
     }
     .rl-header {
         padding-top: 10px;

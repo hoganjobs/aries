@@ -53,13 +53,14 @@
 
         <!-- result状态 -->
         <div v-show="modalStatus == 'result'">
-            <div v-for="(itemf, index) in fansList" v-show="(fansList.length == 1)">
+            <div v-for="(itemf, index) in fansList" :key="index" v-show="(fansList.length == 1)">
                 <div class="f-desc-item">已扫描到“{{itemf.name}}”，是否关联该帐号？</div>
             </div>
             <div
                 class="f-tag"
                 :class="{ active: curFansItem.user_id == itemf.user_id }"
                 v-for="(itemf, index) in fansList"
+                :key="index"
                 @click="fItemClick(itemf)"
                 v-show="(fansList.length > 1)"
             >
@@ -115,8 +116,6 @@ export default {
         onInput(val) {
             if(val != '') {
                 this.searchValue = val;
-                this.getFans();
-                this.pastedVal = "";
             }
         },
         get_info() {
@@ -147,6 +146,7 @@ export default {
             console.log("supportClipboard: ", this.supportClipboard);
             if (_.jumpLink) {
                 _.searchValue = "";
+                _.pastedVal = "";
                 if (navigator.clipboard) { // 浏览器支持clipboard api
                     // 扫描前先清除剪切板
                     _.clearClipboard();
@@ -164,7 +164,7 @@ export default {
             clearTimeout(this.timerClip);
             this.timerClip = setTimeout(function() {
                 _.getClipboard();
-                window.console.log("setIntervalt: ");
+                window.console.log("timerClip");
                 if (_.modalStatus == "scan") {
                     _.getClipboardContents();
                 }
@@ -246,7 +246,6 @@ export default {
     watch: {
         searchValue(val) {
             let _ = this;
-            window.console.log(_.info.platform);
             if (val) {
                 if (
                     (_.info.platform == "autohome" &&
@@ -322,9 +321,6 @@ export default {
     color: #4a4a4a;
     letter-spacing: -2.08px;
     text-align: center;
-}
-.f-loading-tips.mgt {
-    
 }
 .f-loading-tips.mgb {
     margin-bottom: 20px;

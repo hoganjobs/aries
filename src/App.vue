@@ -80,7 +80,7 @@
                                         : ""
                                 }}</span>
                                 <i
-                                    class="iconfont iconfs-disconnect1 off-rl-ico"
+                                    class="iconfont iconfs-disconnect off-rl-ico"
                                     @click="showUnRelation"
                                     title="解除关联"
                                 ></i>
@@ -288,19 +288,21 @@ export default {
                 })
             }else {
                 _.$store.commit('setUserInfo', userInfo)
+                Watermark.set(userInfo.user_name)
 
                 var currPlat= UTILS.getStore('currPlat')
-                this.currentPlatform = currPlat
-                this.$store.commit('changePlatform', currPlat)
-                //         // 选中左边菜单
-                let path_name = this.$route.name;
-                this.activeName = currPlat.platform + '-' + path_name
-                this.openMenu = currPlat.platform
-                Watermark.set(userInfo.user_name)
-                if(currPlat.platform == 'autohome') {
-                    this.showBbsList = true
-                }else {
-                    this.showBbsList = false
+                if (currPlat) {
+                    this.currentPlatform = currPlat
+                    this.$store.commit('changePlatform', currPlat)
+                    // 选中左边菜单
+                    let path_name = this.$route.name;
+                    this.activeName = currPlat.platform + '-' + path_name
+                    this.openMenu = currPlat.platform
+                    if(currPlat.platform == 'autohome') {
+                        this.showBbsList = true
+                    }else {
+                        this.showBbsList = false
+                    }
                 }
             }
 

@@ -7,7 +7,7 @@
             <div class="tips2">
                 请点击“
                 <!--          <Icon class="t-ico" type="ios-at" />-->
-                <i class="iconfont iconfs-connect1 t-ico"></i>
+                <i class="iconfont iconfs-connect t-ico"></i>
                 ”开始关联吧！
             </div>
         </div>

@@ -12,16 +12,16 @@
             <div class="md-body">
                 <div class="md-desc-item">
                     点击“去{{ actText[item.platform] }}”，进入{{
-                        item.name
+                    item.name
                     }}，{{
-                        actText[item.platform]
+                    actText[item.platform]
                     }}我们随机提供的账号，系统将会扫描你的{{
-                        actText[item.platform]
+                    actText[item.platform]
                     }}动作，并提供候选账号昵称给你进行确认。
                 </div>
                 <div class="md-eg">
                     注：已关注账号请取消{{ actText[item.platform] }}后再次{{
-                        actText[item.platform]
+                    actText[item.platform]
                     }}
                 </div>
             </div>
@@ -32,8 +32,7 @@
                 size="large"
                 type="primary"
                 @click="toJump"
-                >去{{ actText[item.platform] }}</Button
-            >
+            >去{{ actText[item.platform] }}</Button>
         </div>
 
         <!-- start状态 -->
@@ -42,59 +41,51 @@
             <div class="md-body">
                 <div class="md-desc-item">
                     点击“我已{{
-                        actText[item.platform]
+                    actText[item.platform]
                     }}，请扫描”，系统将会扫描你的{{
-                        actText[item.platform]
+                    actText[item.platform]
                     }}动作，并提供候选账号昵称给你进行确认。
                 </div>
                 <div class="md-eg">
                     注：已{{ actText[item.platform] }}账号请取消{{
-                        actText[item.platform]
+                    actText[item.platform]
                     }}后再次{{ actText[item.platform] }}
                 </div>
             </div>
         </div>
         <div slot="footer" class="md-footer" v-show="modalStatus == 'start'">
-            <Button class="md-btn" size="large" @click="resetBind"
-                >重新{{ actText[item.platform] }}</Button
-            >
+            <Button class="md-btn" size="large" @click="resetBind">重新{{ actText[item.platform] }}</Button>
             <Button
                 class="md-btn"
                 size="large"
                 type="primary"
                 :loading="bindLoading"
                 @click="confirmScan"
-                >我已{{ actText[item.platform] }}，请扫描</Button
-            >
+            >我已{{ actText[item.platform] }}，请扫描</Button>
         </div>
 
         <!-- scan状态 -->
         <div class="md-scan" v-show="modalStatus == 'scan'">
-            <img
-                src="https://allmark.oss-cn-shenzhen.aliyuncs.com/img/logo/scanning.gif"
-                alt=""
-            />
+            <img src="https://allmark.oss-cn-shenzhen.aliyuncs.com/img/logo/scanning.gif" alt />
             <div class="md-loading-tips">请稍等，动作扫描中...</div>
         </div>
         <div slot="footer" class="md-footer" v-show="modalStatus == 'scan'">
-            <Button
-                class="md-btn middle"
-                size="large"
-                type="default"
-                @click="cancelScan"
-                >取消扫描</Button
-            >
+            <Button class="md-btn middle" size="large" type="default" @click="cancelScan">取消扫描</Button>
         </div>
 
         <!-- result状态 -->
         <div slot="header" class="md-header" v-show="modalStatus == 'result'">
             关联{{ item.name }}账号
+            <div class="fans-refreshed-box" @click="confirmScan">
+                <i class="iconfont iconrefresh"></i>
+            </div>
         </div>
         <div v-show="modalStatus == 'result'">
             <div
                 class="md-tag"
                 :class="{ active: curFansItem.user_id == itemf.user_id }"
                 v-for="(itemf, index) in fansList"
+                :key="'f' + index"
                 @click="fItemClick(itemf)"
                 v-show="item.platform !== 'tieba'"
             >
@@ -104,6 +95,7 @@
                 class="md-tag"
                 :class="{ active: curFansItem.name == itemf.name }"
                 v-for="(itemf, index) in fansList"
+                :key="index"
                 @click="fItemClick(itemf)"
                 v-show="item.platform == 'tieba'"
             >
@@ -111,17 +103,14 @@
             </div>
         </div>
         <div slot="footer" class="md-footer" v-show="modalStatus == 'result'">
-            <Button class="md-btn" size="large" @click="resetBind"
-                >重新{{ actText[item.platform] }}</Button
-            >
+            <Button class="md-btn" size="large" @click="resetBind">重新{{ actText[item.platform] }}</Button>
             <Button
                 class="md-btn"
                 size="large"
                 type="primary"
                 :loading="bindLoading"
                 @click="confirmBind"
-                >确定关联</Button
-            >
+            >确定关联</Button>
         </div>
     </Modal>
 </template>
@@ -176,7 +165,7 @@ export default {
         confirmScan() {
             let _ = this;
             this.modalStatus = "scan";
-            let duration = 2 * 1000;
+            let duration = 1 * 1000;
             clearTimeout(_.timerFans);
             _.timerFans = setTimeout(function() {
                 _.getFans();
@@ -184,6 +173,7 @@ export default {
         },
         cancelScan() {
             this.modalStatus = "start";
+            clearTimeout(this.timerFans);
         },
         toJump() {
             let _ = this;
@@ -271,13 +261,13 @@ export default {
         },
         getFansOrg() {
             var _ = this;
-            var cache_key = 'cache_key' +  (new Date()).valueOf()
-            _.cache_key = cache_key
+            var cache_key = "cache_key" + new Date().valueOf();
+            _.cache_key = cache_key;
             var params = {
                 media_platform: this.item.platform,
                 target_id: this.targetId,
                 cache_key: cache_key
-            }
+            };
             API.getFansInfo(params);
         },
         getFans() {
@@ -351,8 +341,6 @@ export default {
     display: block;
     margin: 0 auto 28px;
 }
-.md-btn.right {
-}
 .md-header {
     padding-top: 10px;
     font-size: 18px;
@@ -391,6 +379,14 @@ export default {
 }
 .md-scan {
     text-align: center;
+}
+.fans-refreshed-box {
+    display: inline-block;
+    cursor: pointer;
+}
+.fans-refreshed-box .iconfont {
+    font-size: 16px;
+    color: #333;
 }
 .ivu-tag-size-large {
     height: 32px;

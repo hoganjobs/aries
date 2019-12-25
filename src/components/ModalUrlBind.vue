@@ -88,13 +88,14 @@
             关联{{ item.name }}账号
         </div>
         <div v-show="modalStatus == 'result'">
-            <div v-for="(itemf, index) in fansList" v-show="(fansList.length == 1)">
+            <div v-for="(itemf, index) in fansList" :key="'f_' + index" v-show="(fansList.length == 1)">
                 <div class="md-desc-item">已扫描到“{{itemf.name}}”，是否关联该帐号？</div>
             </div>
             <div
                 class="md-tag"
                 :class="{ active: curFansItem.user_id == itemf.user_id }"
                 v-for="(itemf, index) in fansList"
+                :key="index"
                 @click="fItemClick(itemf)"
                 v-show="(fansList.length > 1)"
             >
@@ -157,8 +158,6 @@ export default {
         onInput(val) {
             if(val != '') {
                 this.searchValue = val;
-                this.getFans();
-                this.pastedVal = "";
             }
         },
         get_info() {
@@ -180,6 +179,7 @@ export default {
             let _ = this;
             if (_.jumpLink) {
                 _.searchValue = "";
+                _.pastedVal = "";
                 if (navigator.clipboard) { // 浏览器支持clipboard api
                     // 扫描前先清除剪切板
                     _.clearClipboard();
@@ -197,7 +197,7 @@ export default {
             clearTimeout(this.timerClip);
             this.timerClip = setTimeout(function() {
                 _.getClipboard();
-                window.console.log("setIntervalt: ");
+                window.console.log("timerClip");
                 if (_.modalStatus == "scan") {
                     _.getClipboardContents();
                 }
@@ -343,8 +343,6 @@ export default {
         },
         searchValue(val) {
             let _ = this;
-            window.console.log(_.item.platform);
-            window.console.log(val, " @ ", val.indexOf("weibo.com") > -1);
             if (val) {
                 if (
                     (_.item.platform == "autohome" &&
@@ -399,8 +397,6 @@ export default {
     display: block;
     margin: 0 auto 28px;
 }
-.md-btn.right {
-}
 .md-header {
     padding-top: 10px;
     font-size: 18px;
@@ -415,9 +411,6 @@ export default {
     color: #4a4a4a;
     letter-spacing: -2.08px;
     text-align: center;
-}
-.md-loading-tips.mgt {
-    
 }
 .md-loading-tips.mgb {
     margin-bottom: 20px;

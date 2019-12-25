@@ -14,12 +14,8 @@
                                 </template>
                                 <template slot-scope="{ row }" slot="hd">
                                     <div class="hd-btn-box" style="text-align: right">
-                                        <div class="" v-if="row.title.error_status == 'no_action'">
-                                            <Button @click="aiDebug(row.title)">智能排查
-                                            </Button>
-                                        </div>
-                                        <div class="" v-if="row.title.error_status != 'no_action'">
-                                            <Button v-if="!row.hd.related_info" @click="toComment(row.title)">
+                                        <div class="hd-btn" >
+                                            <Button v-if="!row.hd.related_info" @click="toComment(row.title, 'firstRender')">
                                                 {{row.hd.name}}
                                             </Button>
 
@@ -28,6 +24,10 @@
                                                     placement="bottom-end">
                                                 <Button @click="toComment(row.title)">{{row.hd.name}}</Button>
                                             </Poptip>
+                                        </div>
+                                        <div class="hd-btn" v-if="row.title.error_status == 'no_action'">
+                                            <Button @click="aiDebug(row.title)">智能排查
+                                            </Button>
                                         </div>
 
                                     </div>
@@ -417,18 +417,20 @@
                 params2.append('interactive_type', art.interactive_type)
                 API.taskResolved(params2, 'twin_web').then(function (res2) {
                     if (res2.data.result) {
-                        setTimeout(function () {
-                            _.calcGetData()
-                        },1500)
-                        // if (_.active == 'abnormal') {
-                        //     _.getTicketsCount('acknowledged', true, 'abnormal');
-                        //     _.getTickets('acknowledged', true);
-                        //     _.getTicketsCount('acknowledged', false, 'pending','none');
-                        // } else {
-                        //     _.getTicketsCount('acknowledged', false, 'pending', 'none');
-                        //     _.getTickets('acknowledged', null)
-                        //
-                        // }
+                        // setTimeout(function () {
+                        //     _.calcGetData();
+                        // },1500)
+                        if (_.active == 'abnormal') {
+                            _.getTicketsCount('acknowledged', true, 'abnormal');
+                            _.getTickets('acknowledged', true);
+                            _.getTicketsCount('acknowledged', false, 'pending','none');
+                        } else {
+                            // _.getTicketsCount('acknowledged', false, 'pending', 'none');
+                            // _.getTickets('acknowledged', null)
+                            setTimeout(function () {
+                                _.calcGetData();
+                            },1500)
+                        }
                         setTimeout(function () {
                             winRef.location = art.url//改变页面的 location
                         },300);//这个等待很重要，如果不等待的话将无法实现
@@ -577,5 +579,11 @@
         flex-direction: column;
         justify-content: space-between;
         min-height: 70px;
+    }
+    .hd-btn-box {
+        display: flex;
+    }
+    .hd-btn:last-child {
+        margin-left: 10px;
     }
 </style>

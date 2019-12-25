@@ -122,9 +122,6 @@
         opacity: .8;
         content: '';
     }
-    .rl-body {
-        /*min-height: 320px;*/
-    }
     .bl-tag {
         padding: 6px 16px;
         background: #F4F4F5;

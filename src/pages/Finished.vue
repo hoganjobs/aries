@@ -18,7 +18,6 @@
                                             <Button v-if="!row.hd.related_info" @click="toComment(row.title, 'firstRender')">
                                                 {{row.hd.name}}
                                             </Button>
-
                                             <Poptip title="口径" v-if="row.hd.related_info" trigger="hover"
                                                     :content="row.hd.related_info || ' '" word-wrap width="220"
                                                     placement="bottom-end">
@@ -29,7 +28,6 @@
                                             <Button @click="aiDebug(row.title)">智能排查
                                             </Button>
                                         </div>
-
                                     </div>
                                 </template>
                             </Table>
@@ -42,7 +40,6 @@
                         </div>
                     </div>
                     <NoData v-show="abnormalTb.length == 0 && !spinShow"></NoData>
-
                 </TabPane>
                 <TabPane :label="'待验收（'+ pageTotal.pending +'）'" name="pending">
                     <div v-show="pendingTb.length > 0">
@@ -62,11 +59,6 @@
                                                     :placement="index != (limit -1)?'bottom-end':'top-end'">
                                                 <Button @click="toComment(row.title)">去评论</Button>
                                             </Poptip>
-<!--                                            <Poptip v-show="index == (limit -1)" title="口径" v-if="row.hd.related_info" trigger="hover"-->
-<!--                                                    :content="row.hd.related_info || ' '" word-wrap width="240"-->
-<!--                                                    placement="top-end">-->
-<!--                                                <Button @click="toComment(row.title)">去评论</Button>-->
-<!--                                            </Poptip>-->
                                         </div>
                                         <div v-if="row.hd.exp.indexOf('NaN') < 0">已等待验收 {{row.hd.exp}}</div>
                                     </div>
@@ -374,9 +366,13 @@
                             operate_account: dti.custom_fields_obj.operate_account || null,
                         },
                     }
+
+                    const plat = UTILS.getStore('currPlat').platform;
+                    const cur_act = dti.custom_fields_obj.interactive_type.replace(plat + '_', '');
+                    const hd_name = "去" + this.$store.state.task_hd_text[cur_act] || "";
                     if (active == 'abnormal') {
                         tb_item.hd = {
-                            name: '去评论',
+                            name: hd_name,
                             related_info: dti.steps_to_reproduce
                         }
                     }

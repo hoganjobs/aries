@@ -85,7 +85,7 @@
     {
       "icon_id": "12211311",
       "name": "mt_qichezhijia_comment",
-      "font_class": "autohome_bar_post",
+      "font_class": "autohome_post_discuss",
       "unicode": "e689",
       "unicode_decimal": 59017
     },
@@ -141,7 +141,7 @@
     {
       "icon_id": "12211319",
       "name": "mt_qichezhijia_newposts",
-      "font_class": "autohome_post_discuss",
+      "font_class": "autohome_bar_post",
       "unicode": "e691",
       "unicode_decimal": 59025
     },

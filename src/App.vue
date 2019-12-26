@@ -269,51 +269,49 @@ export default {
         },
         refreshData() {
             var refresh = "refresh" + new Date().valueOf();
-            // window.console.log("clickRefresh ", refresh);
-            // this.$store.commit('clickRefresh', refresh)
             var router_name = this.$route.name;
             bus.$emit(router_name + "Refresh", refresh);
         }
     },
     mounted() {
         var _ = this;
-        var userInfo = UTILS.getStore('userInfo')
-        if(this.$route.path == '/login') {
-            this.showLogin = true
+        var userInfo = UTILS.getStore("userInfo");
+        if (this.$route.path == "/login") {
+            this.showLogin = true;
         }
-        if(userInfo) {
-            if (this.$route.path == '/') { // 没有路由时
+        if (userInfo) {
+            if (this.$route.path == "/") {
+                // 没有路由时
                 this.$router.replace({
-                    path: '/login'
-                })
-            }else {
-                _.$store.commit('setUserInfo', userInfo)
-                Watermark.set(userInfo.user_name)
+                    path: "/login"
+                });
+            } else {
+                _.$store.commit("setUserInfo", userInfo);
+                Watermark.set(userInfo.user_name);
 
-                var currPlat= UTILS.getStore('currPlat')
+                var currPlat = UTILS.getStore("currPlat");
                 if (currPlat) {
-                    this.currentPlatform = currPlat
-                    this.$store.commit('changePlatform', currPlat)
+                    this.currentPlatform = currPlat;
+                    this.$store.commit("changePlatform", currPlat);
                     // 选中左边菜单
                     let path_name = this.$route.name;
-                    this.activeName = currPlat.platform + '-' + path_name
-                    this.openMenu = currPlat.platform
-                    if(currPlat.platform == 'autohome') {
-                        this.showBbsList = true
-                    }else {
-                        this.showBbsList = false
+                    this.activeName = currPlat.platform + "-" + path_name;
+                    this.openMenu = currPlat.platform;
+                    if (currPlat.platform == "autohome") {
+                        this.showBbsList = true;
+                    } else {
+                        this.showBbsList = false;
                     }
                 }
             }
-
-        }else {
-            this.$store.commit('setUserInfo',null)
-            if (this.$route.path != '/login') { // 没有路由时
+        } else {
+            this.$store.commit("setUserInfo", null);
+            if (this.$route.path != "/login") {
+                // 没有路由时
                 this.$router.replace({
-                    path: '/login'
-                })
+                    path: "/login"
+                });
             }
-
         }
     },
     created() {},

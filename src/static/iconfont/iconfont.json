@@ -389,6 +389,13 @@
       "font_class": "wechat_article_reader",
       "unicode": "e6b4",
       "unicode_decimal": 59060
+    },
+    {
+      "icon_id": "12295272",
+      "name": "mt_guba_posting",
+      "font_class": "xueqiu_bar_post",
+      "unicode": "e6b5",
+      "unicode_decimal": 59061
     }
   ]
 }

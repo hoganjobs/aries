@@ -338,7 +338,7 @@ export default {
                 }
                 const plat = UTILS.getStore('currPlat').platform;
                 const cur_act = cur_rm.replace(plat + '_', '');
-                const hd_name = "去" + this.$store.state.task_hd_text[cur_act] || "";
+                const hd_name = this.$store.state.task_hd_text[cur_act] || "";
 
                 // tag end
                 dt.push({

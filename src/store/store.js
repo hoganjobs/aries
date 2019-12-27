@@ -28,15 +28,15 @@ const state = {
   },
   task_hd_text: {
     bar_post: "发新帖",
-    post_discuss: "评论",
-    article_digg: "点赞",
-    comment_reply: "回复", // 评论点赞
-    comment_digg: "点赞", // 评论点赞
-    article_republish: "转发",
-    autohome_discuss: "评论",
-    article_discuss: "评论",
-    article_repost: "回复",
-    author_follow: "关注"
+    post_discuss: "去评论",
+    article_digg: "去点赞",
+    comment_reply: "去回复", // 评论点赞
+    comment_digg: "去点赞", // 评论点赞
+    article_republish: "去转发",
+    autohome_discuss: "去评论",
+    article_discuss: "去评论",
+    article_repost: "去回复",
+    author_follow: "去关注"
   }
 };
 

@@ -94,6 +94,8 @@
                     net_ease: "关注",
                     tieba: "关注",
                     sina: "评论",
+                    guba: "关注",
+                    xueqiu: "关注"
                 }
             }
         },

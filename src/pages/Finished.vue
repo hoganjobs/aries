@@ -24,7 +24,7 @@
                                                 <Button @click="toComment(row.title)">{{row.hd.name}}</Button>
                                             </Poptip>
                                         </div>
-                                        <div class="hd-btn" v-if="row.title.error_status == 'no_action'">
+                                        <div class="hd-btn" v-if="row.title.error_status == 'no_action' && (media_platform !== 'guba' && media_platform !== 'xueqiu')">
                                             <Button @click="aiDebug(row.title)">智能排查
                                             </Button>
                                         </div>
@@ -57,7 +57,7 @@
                                             <Poptip  title="口径" v-if="row.hd.related_info" trigger="hover"
                                                     :content="row.hd.related_info || ' '" word-wrap width="220"
                                                     :placement="index != (limit -1)?'bottom-end':'top-end'">
-                                                <Button @click="toComment(row.title)">去评论</Button>
+                                                <Button @click="toComment(row.title)">{{row.hd.name}}</Button>
                                             </Poptip>
                                         </div>
                                         <div v-if="row.hd.exp.indexOf('NaN') < 0">已等待验收 {{row.hd.exp}}</div>
@@ -160,7 +160,6 @@
                     },
                 ],
                 pendingTbColumns: [
-
                     {
                         title: '帖子标题',
                         key: 'title',
@@ -366,10 +365,9 @@
                             operate_account: dti.custom_fields_obj.operate_account || null,
                         },
                     }
-
                     const plat = UTILS.getStore('currPlat').platform;
                     const cur_act = dti.custom_fields_obj.interactive_type.replace(plat + '_', '');
-                    const hd_name = "去" + this.$store.state.task_hd_text[cur_act] || "";
+                    const hd_name = this.$store.state.task_hd_text[cur_act] || "";
                     if (active == 'abnormal') {
                         tb_item.hd = {
                             name: hd_name,
@@ -378,6 +376,7 @@
                     }
                     if (active == 'pending') {
                         tb_item.hd = {
+                            name: hd_name,
                             exp: UTILS.getDateDiff(dti.resolved_at * 1000, 2),
                             related_info: dti.steps_to_reproduce
                         }
@@ -578,6 +577,7 @@
     }
     .hd-btn-box {
         display: flex;
+        justify-content: flex-end;
     }
     .hd-btn:last-child {
         margin-left: 10px;

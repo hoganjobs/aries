@@ -150,7 +150,9 @@ export default {
                 qq: "评论",
                 net_ease: "关注",
                 tieba: "关注",
-                sina: "评论"
+                sina: "评论",
+                guba: "关注",
+                xueqiu: "关注"
             }
         };
     },

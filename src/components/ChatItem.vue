@@ -203,7 +203,6 @@
                 UTILS.setStore('currPlat', item)
                 this.$emit('clickTaskMenu', 'change')
                 bus.$emit(page+'MenuClick',refresh)
-                console.log("@@:", _.$route.name, page);
                 if(_.$route.name != page) {
                     this.$router.push({
                         path: '/'+page,

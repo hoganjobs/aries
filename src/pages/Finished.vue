@@ -51,7 +51,7 @@
                                 <template slot-scope="{ row, index }" slot="hd">
                                     <div class="hd-btn-box tips-text dpflex pending-hd-box" style="text-align: right">
                                         <div class="">
-                                            <Button v-if="!row.hd.related_info" @click="toComment(row.title)">去评论
+                                            <Button v-if="!row.hd.related_info" @click="toComment(row.title)">{{row.hd.name}}
                                             </Button>
 
                                             <Poptip  title="口径" v-if="row.hd.related_info" trigger="hover"
@@ -194,7 +194,6 @@
                 let bbs_id = UTILS.getStore('bbs')? UTILS.getStore('bbs').bbs_id : '';
                 let app_name = UTILS.getStore('currPlat')? UTILS.getStore('currPlat').app_name : '';
                 let media_platform = UTILS.getStore('currPlat')? UTILS.getStore('currPlat').platform : '';
-
                 var params = {
                     status: status,
                     get_error_status: get_error_status || null,
@@ -239,7 +238,6 @@
                     }
                 }
                 _.calcGetData('firstRender')
-
             },
             getTickets(status, get_error_status, error_status) {
                 var _ = this;
@@ -248,6 +246,7 @@
                 let bbs_id = UTILS.getStore('bbs')? UTILS.getStore('bbs').bbs_id : '';
                 let app_name = UTILS.getStore('currPlat')? UTILS.getStore('currPlat').app_name : '';
                 let media_platform = UTILS.getStore('currPlat')? UTILS.getStore('currPlat').platform : '';
+                _.media_platform = media_platform;
 
                 var params = {
                     bbs_id: bbs_id,
@@ -294,13 +293,9 @@
                     get_error_status = true
                 }
                 if(!firstRender) {
-                    if (active == 'abnormal') {
-                        _.getTicketsCount('acknowledged', true, 'abnormal');
-                    } else if (active == 'pending') {
-                        _.getTicketsCount('acknowledged', false, 'pending','none');
-                    } else if (active == 'finished') {
-                        _.getTicketsCount('confirmed', false, 'finished')
-                    }
+                    _.getTicketsCount('acknowledged', true, 'abnormal');
+                    _.getTicketsCount('acknowledged', false, 'pending', 'none');
+                    _.getTicketsCount('confirmed', false, 'finished')
                 }
 
                 this.getTickets(status, get_error_status,error_status)
@@ -401,7 +396,6 @@
                 var active = this.active
                 this.begin[active] = num - 1
                 this.calcGetData()
-
             },
             toComment(art) {
                 var _ = this;

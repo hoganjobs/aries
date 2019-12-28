@@ -41,6 +41,8 @@
                                 theme="dark"
                                 :key="menuKey"
                                 :open-names="[openMenu]"
+                                accordion
+                                ref="side_menu"
                             >
                                 <ChatItem
                                     @clickTaskMenu="clickTaskMenu"
@@ -297,6 +299,10 @@ export default {
                     let path_name = this.$route.name;
                     this.activeName = currPlat.platform + "-" + path_name;
                     this.openMenu = currPlat.platform;
+                    this.$nextTick(() => {
+                        // 手动更新展开的子目录
+                        this.$refs.side_menu.updateOpened();
+                    });
                     if (currPlat.platform == "autohome") {
                         this.showBbsList = true;
                     } else {
@@ -344,8 +350,7 @@ export default {
                     path_name = "finished";
                     this.showBbsList = false;
                 }
-                this.activeName =
-                    this.currentPlatform.platform + "-" + path_name;
+                this.activeName = this.currentPlatform.platform + "-" + path_name;
                 this.openMenu = this.currentPlatform.platform;
                 // window.console.log("showLogin ", this.showLogin);
                 this.ckTopShowIco();

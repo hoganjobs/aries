@@ -373,7 +373,6 @@ export default {
         getRefreshStatus() {
             var _ = this;
             let key = _.$route.name + "Refresh";
-            console.log("::", key);
             bus.$off(key);
             bus.$on(key, () => {
                 this.clickTab(this.curTabType);

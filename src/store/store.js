@@ -35,7 +35,7 @@ const state = {
     article_republish: "去转发",
     autohome_discuss: "去评论",
     article_discuss: "去评论",
-    article_repost: "去回复",
+    article_repost: "去转发",
     author_follow: "去关注"
   }
 };

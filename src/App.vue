@@ -255,6 +255,7 @@ export default {
         tapItem(item, index) {
             this.$store.commit("changePlatform", this.platformList[index]);
             this.currentPlatform = this.$store.state.currentPlatform;
+            UTILS.setStore('currPlat', item)
             if (
                 this.$route.path == "/welcome" &&
                 this.$route.query.platform == item.id

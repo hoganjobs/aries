@@ -210,7 +210,9 @@ export default {
                 qq: "act",
                 net_ease: "act",
                 tieba: "act",
-                sina: "act"
+                sina: "act",
+                guba: "act",
+                xueqiu: "act"
             }
         };
     },

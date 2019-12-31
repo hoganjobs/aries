@@ -24,7 +24,7 @@
                                                 <Button @click="toComment(row.title)">{{row.hd.name}}</Button>
                                             </Poptip>
                                         </div>
-                                        <div class="hd-btn" v-if="row.title.error_status == 'no_action' && (media_platform !== 'guba' && media_platform !== 'xueqiu')">
+                                        <div class="hd-btn" v-if="row.title.error_status == 'no_action'">
                                             <Button @click="aiDebug(row.title)">智能排查
                                             </Button>
                                         </div>

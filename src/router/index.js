@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '../pages/Login'
-import Task from '../pages/Task'
 import Unfinished from '../pages/Unfinished'
 import Finished from '../pages/Finished'
 import Welcome from '../pages/Welcome'
@@ -28,11 +27,6 @@ export default new Router({
       path: '/login',
       name: 'login',
       component: Login
-    },
-    {
-      path: '/task',
-      name: 'task',
-      component: Task
     },
     {
       path: '/unfinished',

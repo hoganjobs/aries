@@ -58,7 +58,7 @@
                     </div>
                 </div>
                 <div class="chat-box">
-                    <div class="chat-area">
+                    <div class="chat-area" v-if="platformList.length">
                         <div
                             class="box-hd"
                             v-show="currentPlatform.is_relation"
@@ -112,6 +112,7 @@
                             <router-view />
                         </div>
                     </div>
+                    <NoPlatform v-if="!platformList.length"></NoPlatform>
                 </div>
             </div>
         </div>
@@ -173,6 +174,7 @@ import bus from "./api/bus";
 import Watermark from "./api/watermark";
 import ChatItem from "./components/ChatItem";
 import SelectBbs from "./components/SelectBbs";
+import NoPlatform from "./components/NoPlatform";
 import Login from "./pages/Login";
 
 export default {
@@ -180,7 +182,8 @@ export default {
     components: {
         ChatItem,
         Login,
-        SelectBbs
+        SelectBbs,
+        NoPlatform
     },
     data() {
         return {
@@ -291,7 +294,7 @@ export default {
             } else {
                 _.$store.commit("setUserInfo", userInfo);
                 Watermark.set(userInfo.user_name);
-
+                UTILS.heartbeat();
                 var currPlat = UTILS.getStore("currPlat");
                 if (currPlat) {
                     this.currentPlatform = currPlat;

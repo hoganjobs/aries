@@ -219,21 +219,24 @@ export default {
         },
 
         getTaskCount() {
-            var _ = this;
+            let _ = this;
+            let cur_p = UTILS.getStore("currPlat");
 
             let bbs_id = UTILS.getStore("bbs")
                 ? UTILS.getStore("bbs").bbs_id
                 : "";
-            let app_name = UTILS.getStore("currPlat")
-                ? UTILS.getStore("currPlat").app_name
+            let app_name = cur_p
+                ? cur_p.app_name
                 : "";
-            let media_platform = UTILS.getStore("currPlat")
-                ? UTILS.getStore("currPlat").platform
+            let media_platform = cur_p
+                ? cur_p.platform
                 : "";
-            this.showTabs =
-                UTILS.getStore("currPlat").platform == "autohome"
-                    ? true
-                    : false;
+            if (cur_p) {
+                this.showTabs =
+                    cur_p.platform == "autohome"
+                        ? true
+                        : false;
+            }
 
             var params = {
                 article_type: _.curTabType || "",
